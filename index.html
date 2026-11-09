@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pneumonie">
+<meta name="theme-color" content="#0e0a1a">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Pneumonie – animierte Präsentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --purple:#6941db; --deep:#4a3a6b; --ink:#2a1f45; --lav:#f3f0fa; --line:#e4ddf3;
+  --bg:#fbfbfa; --night:#1a1230; --good:#1f8a6a; --bad:#c42a41;
+  --ease:cubic-bezier(.77,0,.18,1); --out:cubic-bezier(.16,1,.3,1); --back:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0e0a1a;overflow:hidden;font-family:Poppins,system-ui,sans-serif;color:var(--ink)}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;perspective:2600px;perspective-origin:50% 50%}
+#stage{position:relative;width:1920px;height:1080px;transform-origin:center center;transform-style:preserve-3d;flex:none}
+.slide{position:absolute;inset:0;overflow:hidden;background:var(--bg);visibility:hidden;backface-visibility:hidden;transform-style:flat;border-radius:2px;box-shadow:0 40px 120px rgba(0,0,0,.45)}
+.slide.active{visibility:visible}
+.abs{position:absolute}
+.display{font-family:'Archivo Black',sans-serif;text-transform:uppercase}
+.pagenum{position:absolute;right:20px;bottom:22px;font-size:22px;color:#fff;z-index:5}
+.band{position:absolute;left:0;right:0;bottom:0;height:70px;background:var(--deep)}
+
+/* entrance helper: elements with .ani start hidden and play when slide has .play */
+.ani{opacity:0}
+.slide.play .ani{animation-fill-mode:both;animation-duration:var(--d,900ms);animation-timing-function:var(--e,var(--out));animation-delay:var(--t,0ms)}
+.slide.play .rise{animation-name:rise}
+.slide.play .pop{animation-name:pop;--e:var(--back)}
+.slide.play .fade{animation-name:fade}
+.slide.play .growx{animation-name:growx}
+.slide.play .zoomin{animation-name:zoomin}
+@keyframes rise{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes growx{from{opacity:1;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@keyframes zoomin{from{opacity:0;transform:scale(.55) translateY(80px);filter:blur(14px)}to{opacity:1;transform:none;filter:blur(0)}}
+.mask{display:block;overflow:hidden;padding-bottom:.06em}
+.mask>span{display:block;transform:translateY(115%)}
+.slide.play .mask>span{animation:maskup 1000ms var(--out) both;animation-delay:var(--t,0ms)}
+@keyframes maskup{from{transform:translateY(115%)}to{transform:none}}
+
+/* floating + parallax */
+.par{position:absolute;transition:transform 1.2s var(--out);transform:translate(calc(var(--mx,0)*var(--z,0)*1px),calc(var(--my,0)*var(--z,0)*1px))}
+.float{animation:floaty var(--fd,7s) ease-in-out infinite alternate;animation-delay:var(--fdl,0s)}
+@keyframes floaty{0%{transform:translateY(-14px) rotate(-5deg)}100%{transform:translateY(16px) rotate(6deg)}}
+.breathe{animation:breathe 4.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 30px rgba(186,120,255,.35))}50%{transform:scale(1.04);filter:drop-shadow(0 0 70px rgba(214,140,255,.75))}}
+.twinkle{position:absolute;border-radius:50%;background:#fff;animation:tw var(--tw,3s) ease-in-out infinite;animation-delay:var(--twd,0s)}
+@keyframes tw{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+
+/* ---------- SLIDE 1 ---------- */
+#s1 .blob{left:1095px;top:40px;width:900px;height:1100px;background:var(--purple);border-radius:470px 0 0 470px/560px 0 0 560px;clip-path:circle(0% at 100% 45%)}
+#s1.play .blob{animation:blobin 1400ms var(--ease) 100ms both}
+@keyframes blobin{to{clip-path:circle(150% at 100% 45%)}}
+#s1 .tag{left:105px;top:100px;display:flex;align-items:center;gap:18px;font-weight:700;font-size:34px;color:#8e3fbf}
+#s1 .tag img{width:70px}
+#s1 h1{position:absolute;left:144px;top:400px;margin:0;font-size:80px;line-height:.9;color:var(--purple);letter-spacing:.5px}
+#s1 .by{left:300px;top:640px;font-size:27px;font-weight:500}
+#s1 .pill{left:226px;top:688px;width:380px;height:160px;border-radius:80px;background:linear-gradient(90deg,#5ec8f2,#7f8cf3 55%,#a07af0);box-shadow:0 18px 50px rgba(105,65,219,.35),0 0 40px rgba(94,200,242,.35);transform-origin:left center}
+#s1.play .pill{animation:pillin 900ms var(--back) 1500ms both}
+@keyframes pillin{from{opacity:0;transform:scaleX(.1)}to{opacity:1;transform:none}}
+#s1 .names{left:330px;top:706px;margin:0;padding:0;list-style:none;color:#fff;font-weight:700;font-size:28px;line-height:1.45}
+#s1 .names li::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#fff;margin:0 16px 4px 0;vertical-align:middle}
+#s1 .lung{left:960px;top:95px;width:860px}
+#s1 .lung img{width:100%;display:block}
+
+/* ---------- SLIDE 12 ---------- */
+#s12 .title{left:160px;top:52px;font-size:64px;font-weight:700;color:var(--ink);margin:0}
+#s12 .bar{left:160px;top:150px;width:140px;height:10px;border-radius:5px;background:var(--purple);transform-origin:left}
+#s12 .info{left:160px;top:186px;display:flex;align-items:center;gap:16px;font-size:21px;font-style:italic;color:#5b5070}
+#s12 .info i{width:36px;height:36px;border-radius:50%;background:#5a6478;color:#fff;font-style:normal;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:20px;font-family:Georgia,serif}
+#s12 .track{left:160px;top:340px;width:1600px;height:6px;border-radius:3px;background:#e2d9f7;transform-origin:left}
+#s12 .fill{left:160px;top:340px;height:6px;border-radius:3px;background:linear-gradient(90deg,#f4a259,#fd5c02 55%,#1fa595);width:0;transition:width 1100ms var(--ease)}
+#s12 .dot{width:84px;height:84px;top:301px;border-radius:50%;color:#fff;font-weight:700;font-size:42px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(42,31,69,.18);transition:transform .6s var(--back)}
+#s12 .dot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:4px solid currentColor;opacity:0}
+#s12 .dot.lit{transform:scale(1.18)}
+#s12 .dot.lit::after{animation:ring 1.6s ease-out 2}
+@keyframes ring{from{opacity:.8;transform:scale(1)}to{opacity:0;transform:scale(1.9)}}
+#s12 .card{width:480px;height:310px;top:460px;border-radius:22px;background:#9061c2;color:#fff;padding:24px 30px;transform-origin:50% 0;transform:perspective(1200px) rotateX(-95deg);opacity:0;transition:transform 1000ms var(--back),opacity 400ms ease,box-shadow 1s;box-shadow:0 0 0 rgba(0,0,0,0)}
+#s12 .card.on{transform:perspective(1200px) rotateX(0);opacity:1;box-shadow:0 26px 60px rgba(105,65,219,.35)}
+#s12 .card h3{margin:0 0 16px;text-align:center;font-size:38px;font-weight:700}
+#s12 .card ul{margin:0;padding-left:24px;font-size:21px;font-weight:600;line-height:1.45}
+#s12 .card li{margin-bottom:6px}
+#s12 .comp{left:160px;top:830px;width:1600px;height:130px;border-radius:20px;background:#fde6ec;display:flex;align-items:center;gap:30px;padding:0 30px;transform:translateY(80px);opacity:0;transition:transform .9s var(--back),opacity .5s}
+#s12 .comp.on{transform:none;opacity:1}
+#s12 .comp .warn{width:90px;height:90px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+#s12 .comp.on .warn svg{animation:wiggle .9s ease-in-out .5s 2}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+#s12 .comp b{display:block;color:#d22d4a;font-size:19px;font-weight:700}
+#s12 .comp span{font-size:24px;font-weight:500}
+
+/* ---------- SLIDE 27 ---------- */
+#s27{background:radial-gradient(900px 700px at 0% 0%,#e3d3fb 0%,rgba(227,211,251,0) 70%),var(--bg)}
+#s27 .title{left:100px;top:96px;font-size:68px;margin:0;color:var(--ink)}
+#s27 .bar{left:100px;top:192px;width:140px;height:10px;border-radius:5px;background:var(--purple);transform-origin:left}
+#s27 .sub{left:100px;top:212px;font-size:26px;font-weight:700;color:var(--deep)}
+#s27 .virus{left:1700px;top:-90px;width:220px}
+#s27 .grid{left:100px;top:280px;width:1720px;display:grid;grid-template-columns:repeat(3,553px);gap:30px;perspective:1600px}
+#s27 .q{position:relative;height:340px;display:flex;flex-direction:column;background:#fff;border:3px solid var(--line);border-radius:28px;padding:26px 30px 0 30px;transition:border-color .5s,box-shadow .5s}
+#s27.play .q{animation:qin 900ms var(--back) both;animation-delay:calc(700ms + var(--i)*110ms)}
+@keyframes qin{from{opacity:0;transform:translateY(140px) rotateX(-40deg) scale(.9)}to{opacity:1;transform:none}}
+#s27 .q.solved{border-color:#a7dcc7;box-shadow:0 18px 40px rgba(31,138,106,.18)}
+#s27 .qh{display:flex;gap:20px;align-items:flex-start;min-height:112px}
+#s27 .num{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;font-weight:700;font-size:27px;display:flex;align-items:center;justify-content:center;flex:none;transition:background .5s,transform .5s var(--back)}
+#s27 .q.solved .num{background:var(--good);transform:rotate(360deg)}
+#s27 .qt{font-size:23px;font-weight:700;line-height:1.3;color:var(--ink)}
+#s27 .opts{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+#s27 .opt{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;font-size:21px;color:var(--deep);padding:4px 12px;border-radius:12px;transition:background .3s,color .3s,transform .3s}
+#s27 .opt:hover{background:var(--lav)}
+#s27 .opt:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+#s27 .opt .l{width:30px;height:30px;border-radius:8px;background:var(--lav);color:var(--purple);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex:none;transition:background .3s,color .3s}
+#s27 .opt.right{background:#e2f4ec;color:#145c47;font-weight:600}
+#s27 .opt.right .l{background:var(--good);color:#fff}
+#s27 .opt.wrong{background:#fbe3e7;color:#8f1d30;animation:shake .5s}
+#s27 .opt.wrong .l{background:var(--bad);color:#fff}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+#s27 .why{margin:6px 0 0 12px;font-size:16px;color:#145c47;font-weight:500;opacity:0;transform:translateY(10px);transition:opacity .5s .2s,transform .5s .2s}
+#s27 .q.solved .why{opacity:1;transform:none}
+
+/* ---------- SLIDE 29 ---------- */
+#s29{background:var(--night)}
+#s29 .glow{left:935px;top:84px;width:1000px;height:1000px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.55),rgba(139,92,246,0) 68%)}
+#s29.play .glow{animation:glowp 5s ease-in-out 1.2s infinite}
+@keyframes glowp{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
+#s29 .blob{left:1095px;top:40px;width:900px;height:1100px;background:var(--purple);border-radius:470px 0 0 470px/560px 0 0 560px;opacity:.95}
+#s29 .arc{left:1040px;top:0;width:520px;height:520px;border-radius:100% 0 0 0;background:#3b2a6b}
+#s29 .thanks{left:100px;top:250px;margin:0;font-size:200px;line-height:.9;color:#fff}
+#s29 .thanks .w{display:block;white-space:nowrap}
+#s29 .ch{display:inline-block;opacity:0}
+#s29.play .ch{animation:drop 900ms var(--back) both;animation-delay:calc(500ms + var(--k)*55ms)}
+@keyframes drop{from{opacity:0;transform:translateY(-220px) rotate(-18deg) scale(.6)}to{opacity:1;transform:none}}
+#s29 .bar{left:100px;top:708px;width:200px;height:12px;border-radius:6px;background:#b69cff;transform-origin:left}
+#s29 .q{left:100px;top:748px;font-size:72px;color:#c9b5ff}
+#s29 canvas{position:absolute;inset:0;pointer-events:none}
+#s29 .pagenum{color:#fff}
+
+/* ---------- transitions overlay + UI ---------- */
+#flash{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.9),rgba(160,110,255,.5) 35%,rgba(26,18,48,0) 70%);opacity:0;z-index:20}
+#progress{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,#b69cff,#6941db);width:0;z-index:30;transition:width .8s var(--ease)}
+#ui{position:fixed;right:22px;bottom:22px;display:flex;gap:10px;z-index:30;opacity:0;transition:opacity .4s}
+body.ui #ui{opacity:1}
+#ui button{all:unset;cursor:pointer;width:48px;height:48px;border-radius:14px;background:rgba(26,18,48,.72);backdrop-filter:blur(6px);color:#fff;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18)}
+#ui button:hover{background:rgba(105,65,219,.9)}
+#ui button:focus-visible{outline:3px solid #b69cff}
+#hint{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:30;color:#fff;background:rgba(26,18,48,.78);border:1px solid rgba(255,255,255,.18);padding:10px 20px;border-radius:999px;font-size:14px;transition:opacity .6s;backdrop-filter:blur(6px)}
+#hint.gone{opacity:0;pointer-events:none}
+
+/* ---------- generated slides ---------- */
+.inner{position:absolute;inset:0}
+.el{position:absolute;display:block;max-width:none}
+.el.anim{opacity:0}
+.el img,.el>img{display:block;width:100%;height:100%}
+.slide.play .el.anim{animation-fill-mode:both;animation-delay:var(--t,0ms)}
+.slide.play .a-title{animation:eTitle 1000ms var(--out)}
+.slide.play .a-text{animation:eText 850ms var(--out)}
+.slide.play .a-card{animation:eCard 950ms cubic-bezier(.2,1.25,.4,1)}
+.slide.play .a-pop{animation:ePop 750ms var(--back)}
+.slide.play .a-growx{animation:eGrow 800ms var(--ease);transform-origin:left center}
+.slide.play .a-circle{animation:eCircle 1400ms var(--ease)}
+.slide.play .a-photo{animation:ePhoto 1500ms var(--ease)}
+.slide.play .a-zoom{animation:eZoom 1300ms var(--out)}
+.slide.play .a-slam{animation:eSlam 900ms cubic-bezier(.2,.9,.25,1)}
+@keyframes eTitle{from{opacity:0;clip-path:inset(0 0 100% 0);transform:translateY(46px)}to{opacity:1;clip-path:inset(-10% -5% -10% -5%);transform:none}}
+@keyframes eText{from{opacity:0;transform:translateY(38px);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes eCard{from{opacity:0;transform:translateY(90px) scale(.9) rotateX(18deg)}60%{opacity:1}to{opacity:1;transform:none}}
+@keyframes ePop{from{opacity:0;transform:scale(.2) rotate(-14deg)}to{opacity:1;transform:none}}
+@keyframes eGrow{from{opacity:1;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@keyframes eCircle{from{opacity:1;clip-path:var(--c0)}to{opacity:1;clip-path:circle(150% at 50% 50%)}}
+@keyframes ePhoto{from{opacity:1;clip-path:var(--i0);transform:scale(1.18)}to{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
+@keyframes eZoom{from{opacity:0;transform:scale(.55);filter:blur(14px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes eSlam{0%{opacity:0;transform:scale(2.8) rotate(-5deg);filter:blur(10px)}55%{opacity:1;transform:scale(.93) rotate(.5deg);filter:blur(0)}78%{transform:scale(1.035)}100%{opacity:1;transform:none}}
+.lnk{position:absolute;z-index:50;cursor:pointer;border-radius:4px}
+.lnk:hover{background:rgba(105,65,219,.12)}
+.lnk:focus-visible{outline:3px solid var(--purple)}
+.slide{display:none}
+.slide.active{display:block}
+body.lite .slide *,body.lite .slide{filter:none!important}
+body.lite .el{will-change:auto}
+#rot{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:40;display:none;background:rgba(26,18,48,.85);color:#fff;font-size:14px;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.2);white-space:nowrap}
+@media (orientation:portrait){body.touch.started #rot{display:block}}
+body.touch #ui{opacity:1}
+body.touch #ui button{width:40px;height:40px}
+html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#start .ios{display:none;max-width:560px;text-align:center;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:10px 16px;font-size:15px;line-height:1.4}
+body.iosbrowser #start .ios{display:block}
+body.standalone #bFull{display:none}
+#slamflash{position:fixed;inset:0;pointer-events:none;z-index:19;opacity:0;background:radial-gradient(circle at 50% 75%,rgba(255,80,80,.55),rgba(255,60,60,0) 60%)}
+
+/* ---------- start screen ---------- */
+#start{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;background:radial-gradient(1200px 800px at 70% 40%,#3b2a7a 0%,#1a1230 60%,#0e0a1a 100%);color:#fff;transition:opacity .9s var(--ease),transform .9s var(--ease)}
+#start.gone{opacity:0;transform:scale(1.15);pointer-events:none}
+#start .lungs{width:220px;filter:drop-shadow(0 0 40px rgba(186,120,255,.7));animation:breathe 4.8s ease-in-out infinite}
+#start h1{margin:0;font-family:'Archivo Black',sans-serif;font-size:64px;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,#fff,#c9b5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+#start p{margin:-18px 0 0;color:#c9b5ff;font-size:20px}
+#start .bar{width:360px;height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+#start .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7dd3fc,#8b5cf6,#e15cc8);transition:width .3s}
+#start button{all:unset;cursor:pointer;padding:18px 44px;border-radius:999px;font-weight:700;font-size:22px;background:linear-gradient(90deg,#6941db,#a26bf0);box-shadow:0 14px 40px rgba(105,65,219,.55);opacity:.35;pointer-events:none;transition:opacity .4s,transform .3s}
+#start button.ready{opacity:1;pointer-events:auto}
+#start button.ready:hover{transform:scale(1.06)}
+#start button:focus-visible{outline:3px solid #c9b5ff;outline-offset:4px}
+#start small{color:rgba(255,255,255,.55);font-size:14px}
+@media (max-height:520px){#start{gap:14px}#start .lungs{width:90px}#start h1{font-size:34px}#start p{margin:-6px 0 0;font-size:15px}#start .bar{width:240px}#start button{padding:12px 30px;font-size:17px}#start small{font-size:12px}body.iosbrowser #start small,body.iosbrowser #start .lungs{display:none}#start .ios{font-size:12px;padding:6px 12px;max-width:440px}}
+@media (max-width:520px){#start h1{font-size:40px}#start .bar{width:240px}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="viewport"><div id="stage">
+<!-- ===== Folie 1 ===== -->
+<section class="slide" id="s1" data-steps="0" data-trans="carousel" aria-label="Folie 1: Titel">
+  <div class="abs blob"></div>
+  <div class="par" style="--z:10;left:0;top:0;width:1920px;height:1080px" id="s1stars"></div>
+  <div class="abs tag ani rise" style="--t:300ms"><img src="img/lunge.png" alt=""> Fallbeispiel</div>
+  <h1 class="display">
+    <span class="mask" style="--t:650ms"><span>Ich glaube,</span></span>
+    <span class="mask" style="--t:800ms"><span>ich habe eine</span></span>
+    <span class="mask" style="--t:950ms"><span>Bronchitis …</span></span>
+  </h1>
+  <div class="abs by ani rise" style="--t:1300ms">Präsentiert von:</div>
+  <div class="abs pill"></div>
+  <ul class="abs names">
+    <li class="ani rise" style="--t:1900ms">Helena</li>
+    <li class="ani rise" style="--t:2020ms">Daria</li>
+    <li class="ani rise" style="--t:2140ms">Leni</li>
+  </ul>
+  <div class="par lung" style="--z:-14"><div class="ani zoomin" style="--t:700ms;--d:1600ms"><img class="breathe" src="img/lunge.png" alt="Leuchtende Lunge"></div></div>
+  <div class="par" style="--z:26;left:1120px;top:40px"><div class="ani pop" style="--t:1500ms"><svg class="float" style="--fd:6s" width="150" height="110" viewBox="0 0 150 110" aria-hidden="true"><g transform="rotate(-30 75 55)"><rect x="18" y="30" width="114" height="50" rx="25" fill="#c026a8"/><rect x="26" y="38" width="98" height="34" rx="17" fill="#e15cc8" opacity=".55"/><circle cx="40" cy="55" r="10" fill="#fff" opacity=".85"/><g stroke="#c026a8" stroke-width="3"><path d="M30 30l-8-10M60 30l-4-12M90 30l2-12M118 34l8-10M30 80l-8 10M70 80l0 12M110 80l8 10"/></g></g></svg></div></div>
+  <div class="par" style="--z:18;left:1230px;top:130px"><div class="ani pop" style="--t:1650ms"><svg class="float" style="--fd:5s;--fdl:-2s" width="70" height="70" viewBox="0 0 70 70" aria-hidden="true"><circle cx="35" cy="35" r="20" fill="#c026a8"/><circle cx="35" cy="35" r="9" fill="#f5b5ea"/><g stroke="#c026a8" stroke-width="3"><path d="M35 8v8M35 54v8M8 35h8M54 35h8M16 16l6 6M48 48l6 6M54 16l-6 6M16 54l6-6"/></g></svg></div></div>
+  <div class="par" style="--z:34;left:1650px;top:-20px"><div class="ani pop" style="--t:1750ms"><img class="float" style="--fd:8s;width:290px" src="img/p1_b.png" alt=""></div></div>
+  <div class="par" style="--z:22;left:1690px;top:340px"><div class="ani pop" style="--t:1850ms"><img class="float" style="--fd:6.5s;--fdl:-3s;width:160px" src="img/p1_c.png" alt=""></div></div>
+  <div class="par" style="--z:30;left:1180px;top:820px"><div class="ani pop" style="--t:1950ms"><img class="float" style="--fd:7.5s;--fdl:-1s;width:220px" src="img/p1_a.png" alt=""></div></div>
+  <div class="par" style="--z:28;left:1740px;top:670px"><div class="ani pop" style="--t:2050ms"><svg class="float" style="--fd:5.5s;--fdl:-1.5s" width="170" height="130" viewBox="0 0 150 110" aria-hidden="true"><g transform="rotate(-35 75 55)"><rect x="18" y="30" width="114" height="50" rx="25" fill="#c026a8"/><rect x="26" y="38" width="98" height="34" rx="17" fill="#e15cc8" opacity=".55"/><circle cx="40" cy="55" r="10" fill="#fff" opacity=".85"/><g stroke="#c026a8" stroke-width="3"><path d="M30 30l-8-10M60 30l-4-12M90 30l2-12M118 34l8-10M30 80l-8 10M70 80l0 12M110 80l8 10"/></g></g></svg></div></div>
+  <div class="pagenum" style="color:#fff">1</div>
+</section>
+<section class="slide gen" id="s2" data-n="2" data-steps="0" aria-label="Folie 2"></section>
+<section class="slide gen" id="s3" data-n="3" data-steps="0" aria-label="Folie 3"></section>
+<section class="slide gen" id="s4" data-n="4" data-steps="0" aria-label="Folie 4"></section>
+<section class="slide gen" id="s5" data-n="5" data-steps="0" aria-label="Folie 5"></section>
+<section class="slide gen" id="s6" data-n="6" data-steps="0" aria-label="Folie 6"></section>
+<section class="slide gen" id="s7" data-n="7" data-steps="0" aria-label="Folie 7"></section>
+<section class="slide gen" id="s8" data-n="8" data-steps="0" aria-label="Folie 8"></section>
+<section class="slide gen" id="s9" data-n="9" data-steps="0" aria-label="Folie 9"></section>
+<section class="slide gen" id="s10" data-n="10" data-steps="0" aria-label="Folie 10"></section>
+<section class="slide gen" id="s11" data-n="11" data-steps="0" aria-label="Folie 11"></section>
+<!-- ===== Folie 12 ===== -->
+<section class="slide" id="s12" data-steps="4" data-trans="carousel" aria-label="Folie 12: Krankheitsverlauf">
+  <h2 class="abs title ani rise" style="--t:250ms">Krankheitsverlauf</h2>
+  <div class="abs bar ani growx" style="--t:550ms;--d:700ms"></div>
+  <div class="abs info ani fade" style="--t:800ms"><i>i</i>Verlauf ist individuell – er hängt u. a. vom Erreger, vom Gesundheitszustand und von der Behandlung ab.</div>
+  <div class="abs track ani growx" style="--t:1000ms;--d:1300ms;--e:var(--ease)"></div>
+  <div class="abs fill" id="fill12"></div>
+  <div class="abs dot ani pop" data-dot="1" style="left:358px;background:#f4a259;color:#f4a259;--t:1300ms"><span style="color:#fff">1</span></div>
+  <div class="abs dot ani pop" data-dot="2" style="left:918px;background:#fd5c02;color:#fd5c02;--t:1550ms"><span style="color:#fff">2</span></div>
+  <div class="abs dot ani pop" data-dot="3" style="left:1478px;background:#1fa595;color:#1fa595;--t:1800ms"><span style="color:#fff">3</span></div>
+  <div class="abs card" data-step="1" style="left:160px"><h3>Beginn</h3><ul><li>Krankheitserreger gelangen in die Atemwege und lösen eine Entzündungsreaktion aus.</li><li>Erste Beschwerden treten auf</li></ul></div>
+  <div class="abs card" data-step="2" style="left:720px"><h3>Akute Phase</h3><ul><li>Entzündung breitet sich im Lungengewebe aus</li><li>Atemnot und Schmerzen beim Atmen können auftreten</li><li>Sauerstoffaufnahme kann beeinträchtigt sein</li></ul></div>
+  <div class="abs card" data-step="3" style="left:1280px"><h3>Genesung</h3><ul><li>Ursache wird behandelt</li><li>Fieber und Beschwerden gehen zurück</li><li>Entzündung klingt ab</li><li>Husten und Müdigkeit können noch mehrere Wochen anhalten</li></ul></div>
+  <div class="abs comp" data-step="4">
+    <div class="warn"><svg width="46" height="42" viewBox="0 0 46 42" aria-hidden="true"><path d="M23 2 44 40H2Z" fill="#d22d4a" stroke="#d22d4a" stroke-width="3" stroke-linejoin="round"/><rect x="21" y="14" width="4" height="13" rx="2" fill="#fff"/><circle cx="23" cy="32" r="2.6" fill="#fff"/></svg></div>
+    <div><b>Mögliche Komplikationen</b><span>Pleuraerguss · Lungenabszess · Sepsis · Atemversagen</span></div>
+  </div>
+  <div class="band"></div>
+  <div class="pagenum">12</div>
+</section>
+<section class="slide gen" id="s13" data-n="13" data-steps="0" aria-label="Folie 13"></section>
+<section class="slide gen" id="s14" data-n="14" data-steps="0" aria-label="Folie 14"></section>
+<section class="slide gen" id="s15" data-n="15" data-steps="0" aria-label="Folie 15"></section>
+<section class="slide gen" id="s16" data-n="16" data-steps="0" aria-label="Folie 16"></section>
+<section class="slide gen" id="s17" data-n="17" data-steps="0" aria-label="Folie 17"></section>
+<section class="slide gen" id="s18" data-n="18" data-steps="0" aria-label="Folie 18"></section>
+<section class="slide gen" id="s19" data-n="19" data-steps="0" aria-label="Folie 19"></section>
+<section class="slide gen" id="s20" data-n="20" data-steps="0" aria-label="Folie 20"></section>
+<section class="slide gen" id="s21" data-n="21" data-steps="0" aria-label="Folie 21"></section>
+<section class="slide gen" id="s22" data-n="22" data-steps="0" aria-label="Folie 22"></section>
+<section class="slide gen" id="s23" data-n="23" data-steps="0" aria-label="Folie 23"></section>
+<section class="slide gen" id="s24" data-n="24" data-steps="0" aria-label="Folie 24"></section>
+<section class="slide gen" id="s25" data-n="25" data-steps="0" aria-label="Folie 25"></section>
+<section class="slide gen" id="s26" data-n="26" data-steps="0" aria-label="Folie 26"></section>
+<!-- ===== Folie 27 ===== -->
+<section class="slide" id="s27" data-steps="0" data-trans="cube" data-noclick="1" aria-label="Folie 27: Quiz">
+  <img class="abs virus ani pop" style="--t:900ms" src="img/virus.png" alt="">
+  <h2 class="abs title display ani rise" style="--t:200ms">Quiz</h2>
+  <div class="abs bar ani growx" style="--t:450ms;--d:600ms"></div>
+  <div class="abs sub ani fade" style="--t:600ms">Teste dein Wissen – was hast du dir gemerkt?</div>
+  <div class="abs grid" id="quiz"></div>
+  <div class="band"></div>
+  <div class="pagenum">27</div>
+</section>
+<section class="slide gen" id="s28" data-n="28" data-steps="0" aria-label="Folie 28"></section>
+<!-- ===== Folie 29 ===== -->
+<section class="slide" id="s29" data-steps="0" data-trans="warp" aria-label="Folie 29: Vielen Dank">
+  <div class="abs glow"></div>
+  <div class="abs arc ani fade" style="--t:200ms"></div>
+  <div class="abs blob ani fade" style="--t:100ms;--d:1200ms"></div>
+  <div id="s29stars" class="abs" style="inset:0"></div>
+  <div class="par" style="--z:-14;left:960px;top:95px;width:860px"><div class="ani zoomin" style="--t:300ms;--d:1500ms"><img class="breathe" style="width:100%;display:block" src="img/lunge.png" alt="Leuchtende Lunge"></div></div>
+  <div class="par" style="--z:34;left:1650px;top:-20px"><div class="ani pop" style="--t:1300ms"><img class="float" style="--fd:8s;width:290px" src="img/p1_b.png" alt=""></div></div>
+  <div class="par" style="--z:22;left:1690px;top:340px"><div class="ani pop" style="--t:1400ms"><img class="float" style="--fd:6.5s;--fdl:-3s;width:160px" src="img/p1_c.png" alt=""></div></div>
+  <div class="par" style="--z:30;left:1180px;top:820px"><div class="ani pop" style="--t:1500ms"><img class="float" style="--fd:7.5s;--fdl:-1s;width:220px" src="img/p1_a.png" alt=""></div></div>
+  <canvas id="burst" width="1920" height="1080"></canvas>
+  <h2 class="abs thanks display" aria-label="Vielen Dank!"><span class="w" id="w1">Vielen</span><span class="w" id="w2">Dank!</span></h2>
+  <div class="abs bar ani growx" style="--t:1700ms;--d:800ms"></div>
+  <div class="abs q display ani rise" style="--t:2000ms">Noch Fragen?</div>
+  <div class="pagenum">29</div>
+</section>
+</div></div>
+
+<div id="flash"></div>
+<div id="slamflash"></div>
+
+<div id="hint" class="gone">Weiter: Klick, Leertaste oder → · Zurück: ← · Vollbild: F</div>
+<div id="rot">Tipp: Handy quer halten</div>
+
+<div id="start">
+  <img class="lungs" src="img/lunge.png" alt="">
+  <h1>Pneumonie</h1>
+  <p>Fallbeispiel · Helena, Daria &amp; Leni</p>
+  <div class="bar"><i id="loadbar"></i></div>
+  <button id="go" type="button">Präsentation starten</button>
+  <small>Startet im Vollbild · Weiter mit Klick, Leertaste oder →</small>
+  <div class="ios">Echtes Vollbild auf iPhone/iPad: in Safari auf <b>Teilen</b> tippen → <b>„Zum Home-Bildschirm“</b> → dann die Präsentation über das neue Symbol öffnen.</div>
+</div>
+
+<script>
+const DATA={"2":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":580,"y":0,"w":341,"h":341,"a":"decor","z":2,"t":991,"ax":542,"ay":2905},{"x":0,"y":0,"w":244,"h":297,"a":"decor","z":3,"t":835,"ax":885,"ay":2905},{"x":1760,"y":919,"w":160,"h":161,"a":"decor","z":4,"t":1285,"ax":1131,"ay":2905},{"x":117,"y":84,"w":447,"h":84,"a":"title","z":5,"t":150,"ax":1293,"ay":2905},{"x":110,"y":264,"w":620,"h":739,"a":"circle","z":6,"t":80,"o":"c","ax":0,"ay":2164},{"x":151,"y":842,"w":339,"h":81,"a":"text","z":7,"t":1840,"ax":0,"ay":3268},{"x":800,"y":264,"w":1010,"h":739,"a":"circle","z":8,"t":80,"o":"c","ax":622,"ay":2164},{"x":858,"y":325,"w":264,"h":37,"a":"text","z":9,"t":300,"ax":926,"ay":3268},{"x":856,"y":382,"w":898,"h":9,"a":"growx","z":10,"t":520,"ax":0,"ay":3385},{"x":856,"y":423,"w":12,"h":13,"a":"pop","z":11,"t":630,"ax":1346,"ay":3351},{"x":888,"y":420,"w":508,"h":32,"a":"text","z":12,"t":850,"ax":1192,"ay":3268},{"x":856,"y":483,"w":12,"h":12,"a":"pop","z":13,"t":740,"ax":1402,"ay":3351},{"x":888,"y":480,"w":504,"h":31,"a":"text","z":14,"t":960,"ax":827,"ay":3351},{"x":856,"y":542,"w":12,"h":13,"a":"pop","z":15,"t":1070,"ax":1360,"ay":3351},{"x":886,"y":539,"w":515,"h":32,"a":"text","z":16,"t":1180,"ax":0,"ay":3351},{"x":856,"y":602,"w":12,"h":13,"a":"pop","z":17,"t":1290,"ax":1374,"ay":3351},{"x":887,"y":593,"w":583,"h":38,"a":"text","z":18,"t":1400,"ax":341,"ay":3268},{"x":150,"y":353,"w":540,"h":361,"a":"zoom","z":19,"t":410,"ax":0,"ay":2905},{"x":150,"y":811,"w":540,"h":8,"a":"growx","z":20,"t":1730,"ax":900,"ay":3385},{"x":856,"y":656,"w":12,"h":13,"a":"pop","z":21,"t":1510,"ax":1388,"ay":3351},{"x":887,"y":649,"w":308,"h":32,"a":"text","z":22,"t":1620,"ax":517,"ay":3351},{"x":1884,"y":1026,"w":11,"h":17,"a":"text","z":23,"t":1950,"ax":1333,"ay":3351}],"links":[],"ah":3394},"3":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":1501,"y":0,"w":419,"h":1080,"a":"circle","z":2,"t":80,"o":"r","ax":0,"ay":2164},{"x":1101,"y":306,"w":819,"h":774,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":3246},{"x":1101,"y":0,"w":437,"h":425,"a":"card","z":4,"t":300,"ax":821,"ay":3246},{"x":987,"y":90,"w":884,"h":881,"a":"breathe","z":5,"t":250,"ax":421,"ay":2164},{"x":1166,"y":802,"w":264,"h":278,"a":"decor","z":6,"t":765,"ax":830,"ay":4022},{"x":1620,"y":0,"w":300,"h":261,"a":"decor","z":7,"t":1182,"ax":1096,"ay":4022},{"x":1125,"y":32,"w":198,"h":199,"a":"card","z":8,"t":480,"ax":656,"ay":4314},{"x":1756,"y":669,"w":164,"h":199,"a":"card","z":9,"t":1180,"ax":856,"ay":4314},{"x":1682,"y":351,"w":170,"h":168,"a":"decor","z":10,"t":1029,"ax":1229,"ay":4314},{"x":33,"y":447,"w":828,"h":290,"a":"card","z":11,"t":850,"ax":0,"ay":4022},{"x":880,"y":88,"w":205,"h":195,"a":"card","z":12,"t":630,"ax":1022,"ay":4314},{"x":0,"y":0,"w":654,"h":206,"a":"decor","z":13,"t":752,"ax":0,"ay":4314},{"x":21,"y":81,"w":556,"h":53,"a":"card","z":14,"t":520,"ax":728,"ay":4522},{"x":62,"y":377,"w":317,"h":38,"a":"text","z":15,"t":740,"ax":1286,"ay":4522},{"x":91,"y":495,"w":675,"h":31,"a":"text","z":16,"t":1030,"ax":0,"ay":4669},{"x":91,"y":551,"w":726,"h":145,"a":"text","z":17,"t":1070,"ax":0,"ay":4522},{"x":1883,"y":1026,"w":12,"h":17,"a":"pop","z":18,"t":1290,"ax":677,"ay":4669}],"links":[],"ah":4700},"4":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":174,"y":180,"w":713,"h":102,"a":"decor","z":2,"t":1156,"ax":0,"ay":3957},{"x":0,"y":0,"w":244,"h":297,"a":"decor","z":3,"t":733,"ax":1398,"ay":2631},{"x":1760,"y":919,"w":160,"h":161,"a":"decor","z":4,"t":1090,"ax":313,"ay":3671},{"x":196,"y":204,"w":646,"h":35,"a":"pop","z":5,"t":347,"ax":1069,"ay":4061},{"x":372,"y":210,"w":464,"h":465,"a":"zoom","z":6,"t":442,"ax":0,"ay":2164},{"x":451,"y":307,"w":316,"h":285,"a":"card","z":7,"t":775,"ax":1644,"ay":2631},{"x":449,"y":300,"w":311,"h":284,"a":"card","z":8,"t":727,"ax":0,"ay":3385},{"x":16,"y":210,"w":464,"h":465,"a":"zoom","z":9,"t":395,"ax":466,"ay":2164},{"x":95,"y":307,"w":316,"h":285,"a":"card","z":10,"t":680,"ax":0,"ay":3098},{"x":93,"y":300,"w":311,"h":284,"a":"card","z":11,"t":632,"ax":313,"ay":3385},{"x":1440,"y":210,"w":464,"h":465,"a":"zoom","z":12,"t":585,"ax":932,"ay":2164},{"x":1519,"y":307,"w":316,"h":285,"a":"card","z":13,"t":1060,"ax":318,"ay":3098},{"x":1517,"y":300,"w":311,"h":284,"a":"card","z":14,"t":1012,"ax":626,"ay":3385},{"x":906,"y":570,"w":464,"h":465,"a":"zoom","z":15,"t":1535,"ax":1398,"ay":2164},{"x":985,"y":667,"w":316,"h":285,"a":"card","z":16,"t":1820,"ax":636,"ay":3098},{"x":983,"y":660,"w":311,"h":284,"a":"card","z":17,"t":1772,"ax":939,"ay":3385},{"x":728,"y":210,"w":464,"h":465,"a":"zoom","z":18,"t":490,"ax":0,"ay":2631},{"x":807,"y":307,"w":316,"h":285,"a":"card","z":19,"t":870,"ax":954,"ay":3098},{"x":805,"y":300,"w":311,"h":284,"a":"card","z":20,"t":822,"ax":1252,"ay":3385},{"x":1084,"y":210,"w":464,"h":465,"a":"zoom","z":21,"t":537,"ax":466,"ay":2631},{"x":1163,"y":307,"w":316,"h":285,"a":"card","z":22,"t":965,"ax":1272,"ay":3098},{"x":1161,"y":300,"w":311,"h":284,"a":"card","z":23,"t":917,"ax":1565,"ay":3385},{"x":550,"y":570,"w":464,"h":465,"a":"zoom","z":24,"t":1440,"ax":932,"ay":2631},{"x":629,"y":667,"w":316,"h":285,"a":"card","z":25,"t":1725,"ax":1590,"ay":3098},{"x":627,"y":660,"w":311,"h":284,"a":"card","z":26,"t":1677,"ax":0,"ay":3671},{"x":174,"y":376,"w":158,"h":132,"a":"text","z":27,"t":1107,"ax":1181,"ay":3671},{"x":532,"y":369,"w":145,"h":148,"a":"pop","z":28,"t":1155,"ax":475,"ay":3671},{"x":892,"y":368,"w":128,"h":143,"a":"pop","z":29,"t":1202,"ax":756,"ay":3671},{"x":1252,"y":373,"w":138,"h":139,"a":"text","z":30,"t":1250,"ax":886,"ay":3671},{"x":1599,"y":368,"w":153,"h":139,"a":"text","z":31,"t":1297,"ax":1026,"ay":3671},{"x":719,"y":727,"w":132,"h":148,"a":"pop","z":32,"t":1905,"ax":622,"ay":3671},{"x":1105,"y":732,"w":74,"h":42,"a":"text","z":33,"t":2000,"ax":993,"ay":4061},{"x":1160,"y":794,"w":51,"h":78,"a":"text","z":34,"t":2010,"ax":811,"ay":3957},{"x":1075,"y":775,"w":94,"h":97,"a":"text","z":35,"t":2000,"ax":715,"ay":3957},{"x":105,"y":601,"w":287,"h":22,"a":"text","z":36,"t":1345,"ax":0,"ay":4125},{"x":494,"y":601,"w":221,"h":62,"a":"text","z":37,"t":1620,"ax":1625,"ay":3957},{"x":829,"y":602,"w":259,"h":25,"a":"text","z":38,"t":1715,"ax":1717,"ay":4061},{"x":1162,"y":601,"w":307,"h":57,"a":"text","z":39,"t":1715,"ax":455,"ay":4061},{"x":1550,"y":601,"w":244,"h":62,"a":"text","z":40,"t":1630,"ax":0,"ay":4061},{"x":679,"y":963,"w":207,"h":59,"a":"text","z":41,"t":2057,"ax":246,"ay":4061},{"x":1025,"y":961,"w":227,"h":57,"a":"text","z":42,"t":2105,"ax":764,"ay":4061},{"x":1076,"y":39,"w":759,"h":71,"a":"card","z":43,"t":300,"ax":864,"ay":3957},{"x":1883,"y":1026,"w":13,"h":17,"a":"text","z":44,"t":2152,"ax":289,"ay":4125}],"links":[],"ah":4147},"5":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":420,"y":0,"w":1068,"h":967,"a":"circle","z":2,"t":80,"o":"t","ax":0,"ay":3246},{"x":1246,"y":0,"w":674,"h":1069,"a":"photo","z":3,"t":250,"o":"r","ax":691,"ay":2164},{"x":1231,"y":0,"w":689,"h":1080,"a":"circle","z":4,"t":80,"o":"r","ax":0,"ay":2164},{"x":654,"y":447,"w":552,"h":107,"a":"card","z":5,"t":520,"ax":0,"ay":4215},{"x":76,"y":447,"w":552,"h":107,"a":"card","z":6,"t":410,"ax":554,"ay":4215},{"x":76,"y":588,"w":552,"h":106,"a":"card","z":7,"t":850,"ax":554,"ay":4324},{"x":76,"y":728,"w":552,"h":107,"a":"card","z":8,"t":1290,"ax":1108,"ay":4215},{"x":43,"y":66,"w":563,"h":71,"a":"card","z":9,"t":300,"ax":0,"ay":4433},{"x":240,"y":491,"w":229,"h":32,"a":"text","z":10,"t":740,"ax":1484,"ay":4433},{"x":229,"y":628,"w":265,"h":35,"a":"text","z":11,"t":1030,"ax":957,"ay":4433},{"x":807,"y":462,"w":332,"h":82,"a":"text","z":12,"t":700,"ax":1662,"ay":4324},{"x":235,"y":765,"w":258,"h":35,"a":"text","z":13,"t":1470,"ax":1224,"ay":4433},{"x":654,"y":591,"w":552,"h":106,"a":"card","z":14,"t":1070,"ax":1108,"ay":4324},{"x":806,"y":628,"w":330,"h":28,"a":"text","z":15,"t":1250,"ax":1715,"ay":4433},{"x":654,"y":728,"w":552,"h":107,"a":"card","z":16,"t":1510,"ax":0,"ay":4324},{"x":798,"y":748,"w":390,"h":70,"a":"text","z":17,"t":1690,"ax":565,"ay":4433},{"x":15,"y":24,"w":639,"h":168,"a":"decor","z":18,"t":762,"ax":1070,"ay":3246},{"x":1884,"y":1026,"w":12,"h":17,"a":"pop","z":19,"t":1730,"ax":0,"ay":4506}],"links":[],"ah":4523},"6":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":111,"y":704,"w":1701,"h":268,"a":"slam","z":2,"t":1500,"ax":300,"ay":2164},{"x":1468,"y":228,"w":298,"h":476,"a":"photo","z":3,"t":250,"o":"c","ax":0,"ay":2164},{"x":196,"y":710,"w":252,"h":231,"a":"decor","z":4,"t":1950,"ax":0,"ay":2642},{"x":521,"y":92,"w":801,"h":100,"a":"card","z":5,"t":300,"ax":1130,"ay":2642},{"x":528,"y":785,"w":874,"h":103,"a":"pop","z":6,"t":1950,"ax":254,"ay":2642},{"x":1883,"y":1026,"w":13,"h":17,"a":"pop","z":7,"t":520,"ax":1933,"ay":2642}],"links":[],"ah":2873},"7":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":2,"t":0,"ax":0,"ay":4576},{"x":1501,"y":0,"w":419,"h":1080,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":2164},{"x":1101,"y":306,"w":819,"h":774,"a":"circle","z":4,"t":80,"o":"r","ax":0,"ay":3246},{"x":1101,"y":0,"w":437,"h":425,"a":"card","z":5,"t":300,"ax":0,"ay":4022},{"x":987,"y":90,"w":884,"h":881,"a":"breathe","z":6,"t":250,"ax":421,"ay":2164},{"x":1166,"y":802,"w":264,"h":278,"a":"decor","z":7,"t":1082,"ax":439,"ay":4022},{"x":1620,"y":0,"w":300,"h":261,"a":"decor","z":8,"t":1444,"ax":705,"ay":4022},{"x":1125,"y":32,"w":198,"h":199,"a":"card","z":9,"t":480,"ax":1007,"ay":4022},{"x":1756,"y":669,"w":164,"h":199,"a":"card","z":10,"t":1510,"ax":1207,"ay":4022},{"x":1682,"y":351,"w":170,"h":168,"a":"decor","z":11,"t":811,"ax":1579,"ay":4022},{"x":100,"y":360,"w":820,"h":580,"a":"circle","z":12,"t":80,"o":"c","ax":821,"ay":3246},{"x":881,"y":88,"w":204,"h":195,"a":"card","z":13,"t":630,"ax":1373,"ay":4022},{"x":100,"y":85,"w":554,"h":125,"a":"card","z":14,"t":520,"ax":0,"ay":4449},{"x":102,"y":284,"w":325,"h":32,"a":"text","z":15,"t":850,"ax":1193,"ay":4681},{"x":187,"y":468,"w":592,"h":33,"a":"text","z":16,"t":960,"ax":0,"ay":4646},{"x":187,"y":524,"w":537,"h":33,"a":"text","z":17,"t":1070,"ax":594,"ay":4646},{"x":220,"y":580,"w":419,"h":30,"a":"text","z":18,"t":1180,"ax":1520,"ay":4681},{"x":187,"y":636,"w":671,"h":33,"a":"text","z":19,"t":1290,"ax":1133,"ay":4646},{"x":187,"y":692,"w":676,"h":33,"a":"text","z":20,"t":1400,"ax":0,"ay":4681},{"x":216,"y":749,"w":149,"h":25,"a":"text","z":21,"t":1620,"ax":0,"ay":4716},{"x":187,"y":803,"w":513,"h":33,"a":"text","z":22,"t":1730,"ax":678,"ay":4681},{"x":1884,"y":1026,"w":11,"h":17,"a":"text","z":23,"t":1840,"ax":151,"ay":4716},{"x":100,"y":246,"w":140,"h":10,"a":"growx","z":24,"t":740,"ax":164,"ay":4716}],"links":[],"ah":4741},"8":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":1501,"y":0,"w":419,"h":1080,"a":"circle","z":2,"t":80,"o":"r","ax":0,"ay":2164},{"x":1101,"y":306,"w":819,"h":774,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":3246},{"x":1101,"y":0,"w":437,"h":425,"a":"card","z":4,"t":300,"ax":743,"ay":4022},{"x":987,"y":90,"w":884,"h":881,"a":"breathe","z":5,"t":250,"ax":421,"ay":2164},{"x":1125,"y":32,"w":198,"h":199,"a":"card","z":6,"t":480,"ax":1182,"ay":4022},{"x":1756,"y":669,"w":164,"h":199,"a":"card","z":7,"t":740,"ax":1382,"ay":4022},{"x":1682,"y":351,"w":170,"h":168,"a":"decor","z":8,"t":900,"ax":1754,"ay":4022},{"x":28,"y":306,"w":828,"h":584,"a":"circle","z":9,"t":80,"o":"c","ax":821,"ay":3246},{"x":815,"y":88,"w":204,"h":195,"a":"card","z":10,"t":520,"ax":1548,"ay":4022},{"x":70,"y":356,"w":741,"h":488,"a":"zoom","z":11,"t":630,"ax":0,"ay":4022},{"x":55,"y":90,"w":705,"h":166,"a":"title","z":12,"t":150,"ax":0,"ay":4512},{"x":1884,"y":1026,"w":12,"h":17,"a":"text","z":13,"t":850,"ax":707,"ay":4512}],"links":[],"ah":4678},"9":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":2,"t":0,"ax":0,"ay":2164},{"x":72,"y":951,"w":163,"h":129,"a":"decor","z":3,"t":1264,"ax":281,"ay":4124},{"x":0,"y":103,"w":232,"h":373,"a":"decor","z":4,"t":1552,"ax":1637,"ay":3246},{"x":411,"y":128,"w":184,"h":186,"a":"decor","z":5,"t":1219,"ax":241,"ay":3829},{"x":1097,"y":265,"w":416,"h":581,"a":"card","z":6,"t":520,"ax":0,"ay":3246},{"x":1131,"y":293,"w":346,"h":99,"a":"title","z":7,"t":700,"ax":1599,"ay":4124},{"x":511,"y":265,"w":416,"h":580,"a":"card","z":8,"t":410,"ax":418,"ay":3246},{"x":547,"y":293,"w":347,"h":100,"a":"text","z":9,"t":630,"ax":1250,"ay":4124},{"x":1104,"y":422,"w":401,"h":390,"a":"card","z":10,"t":960,"ax":1234,"ay":3246},{"x":522,"y":421,"w":396,"h":391,"a":"card","z":11,"t":740,"ax":836,"ay":3246},{"x":579,"y":83,"w":802,"h":103,"a":"card","z":12,"t":300,"ax":446,"ay":4124},{"x":567,"y":637,"w":279,"h":146,"a":"card","z":13,"t":1180,"ax":0,"ay":4124},{"x":1177,"y":471,"w":239,"h":293,"a":"card","z":14,"t":1140,"ax":0,"ay":3829},{"x":572,"y":459,"w":279,"h":148,"a":"card","z":15,"t":920,"ax":1657,"ay":3829},{"x":408,"y":876,"w":1228,"h":183,"a":"card","z":16,"t":1290,"ax":427,"ay":3829},{"x":490,"y":925,"w":1068,"h":70,"a":"text","z":17,"t":1470,"ax":0,"ay":4272},{"x":1883,"y":1026,"w":13,"h":17,"a":"text","z":18,"t":1510,"ax":1070,"ay":4272}],"links":[],"ah":4342},"10":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":2,"t":0,"ax":0,"ay":2164},{"x":0,"y":103,"w":232,"h":373,"a":"decor","z":3,"t":1057,"ax":1330,"ay":3246},{"x":120,"y":340,"w":264,"h":664,"a":"card","z":4,"t":361,"ax":0,"ay":3246},{"x":143,"y":364,"w":217,"h":216,"a":"card","z":5,"t":667,"ax":1564,"ay":3246},{"x":474,"y":340,"w":264,"h":664,"a":"card","z":6,"t":422,"ax":266,"ay":3246},{"x":828,"y":340,"w":264,"h":664,"a":"card","z":7,"t":483,"ax":532,"ay":3246},{"x":1183,"y":340,"w":264,"h":664,"a":"card","z":8,"t":545,"ax":798,"ay":3246},{"x":1537,"y":340,"w":264,"h":664,"a":"card","z":9,"t":606,"ax":1064,"ay":3246},{"x":180,"y":396,"w":143,"h":152,"a":"pop","z":10,"t":847,"ax":1310,"ay":3912},{"x":498,"y":364,"w":216,"h":216,"a":"card","z":11,"t":790,"ax":1783,"ay":3246},{"x":523,"y":374,"w":165,"h":195,"a":"card","z":12,"t":851,"ax":655,"ay":3912},{"x":852,"y":364,"w":216,"h":216,"a":"card","z":13,"t":912,"ax":0,"ay":3912},{"x":871,"y":384,"w":179,"h":176,"a":"card","z":14,"t":974,"ax":984,"ay":3912},{"x":1206,"y":364,"w":217,"h":216,"a":"card","z":15,"t":1035,"ax":218,"ay":3912},{"x":1561,"y":364,"w":216,"h":216,"a":"card","z":16,"t":1158,"ax":437,"ay":3912},{"x":1235,"y":378,"w":160,"h":188,"a":"card","z":17,"t":1215,"ax":822,"ay":3912},{"x":1598,"y":392,"w":143,"h":159,"a":"pop","z":18,"t":1338,"ax":1165,"ay":3912},{"x":818,"y":72,"w":996,"h":103,"a":"card","z":19,"t":300,"ax":0,"ay":4130},{"x":188,"y":625,"w":127,"h":22,"a":"pop","z":20,"t":1525,"ax":300,"ay":4235},{"x":547,"y":607,"w":118,"h":57,"a":"text","z":21,"t":1587,"ax":0,"ay":4235},{"x":857,"y":625,"w":207,"h":21,"a":"pop","z":22,"t":1648,"ax":429,"ay":4235},{"x":1225,"y":626,"w":178,"h":26,"a":"text","z":23,"t":1709,"ax":120,"ay":4235},{"x":1610,"y":627,"w":118,"h":19,"a":"growx","z":24,"t":1770,"ax":638,"ay":4235},{"x":148,"y":697,"w":206,"h":91,"a":"text","z":25,"t":1832,"ax":998,"ay":4130},{"x":854,"y":697,"w":213,"h":65,"a":"text","z":26,"t":1954,"ax":1365,"ay":4130},{"x":1226,"y":697,"w":177,"h":65,"a":"text","z":27,"t":2016,"ax":1580,"ay":4130},{"x":1575,"y":697,"w":188,"h":65,"a":"text","z":28,"t":2077,"ax":1759,"ay":4130},{"x":755,"y":464,"w":56,"h":16,"a":"growx","z":29,"t":1341,"ax":844,"ay":4235},{"x":1109,"y":464,"w":56,"h":16,"a":"growx","z":30,"t":1403,"ax":902,"ay":4235},{"x":1464,"y":464,"w":56,"h":16,"a":"growx","z":31,"t":1464,"ax":960,"ay":4235},{"x":528,"y":697,"w":157,"h":69,"a":"text","z":32,"t":1893,"ax":1206,"ay":4130},{"x":1876,"y":1026,"w":26,"h":17,"a":"text","z":33,"t":2138,"ax":758,"ay":4235},{"x":401,"y":463,"w":56,"h":17,"a":"growx","z":34,"t":1280,"ax":786,"ay":4235}],"links":[],"ah":4292},"11":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":721,"y":270,"w":579,"h":111,"a":"card","z":2,"t":511,"ax":816,"ay":2164},{"x":101,"y":430,"w":579,"h":111,"a":"card","z":3,"t":792,"ax":1397,"ay":2164},{"x":101,"y":590,"w":579,"h":111,"a":"card","z":4,"t":1214,"ax":0,"ay":2757},{"x":101,"y":750,"w":579,"h":111,"a":"card","z":5,"t":1707,"ax":581,"ay":2757},{"x":136,"y":452,"w":41,"h":67,"a":"pop","z":6,"t":972,"ax":1922,"ay":3092},{"x":127,"y":772,"w":60,"h":56,"a":"pop","z":7,"t":1887,"ax":333,"ay":3162},{"x":721,"y":590,"w":579,"h":111,"a":"card","z":8,"t":1355,"ax":1162,"ay":2757},{"x":721,"y":750,"w":579,"h":111,"a":"card","z":9,"t":1777,"ax":0,"ay":2870},{"x":721,"y":430,"w":579,"h":111,"a":"card","z":10,"t":1003,"ax":581,"ay":2870},{"x":124,"y":612,"w":66,"h":66,"a":"text","z":11,"t":1394,"ax":0,"ay":3162},{"x":745,"y":773,"w":65,"h":66,"a":"text","z":12,"t":1988,"ax":68,"ay":3162},{"x":744,"y":612,"w":66,"h":67,"a":"text","z":13,"t":1535,"ax":1965,"ay":3092},{"x":743,"y":455,"w":68,"h":61,"a":"text","z":14,"t":1183,"ax":263,"ay":3162},{"x":101,"y":270,"w":579,"h":111,"a":"card","z":15,"t":440,"ax":1162,"ay":2870},{"x":124,"y":293,"w":66,"h":66,"a":"decor","z":16,"t":1578,"ax":135,"ay":3162},{"x":232,"y":312,"w":291,"h":23,"a":"text","z":17,"t":651,"ax":306,"ay":3230},{"x":1340,"y":270,"w":480,"h":591,"a":"zoom","z":18,"t":581,"ax":0,"ay":2164},{"x":1414,"y":383,"w":332,"h":222,"a":"decor","z":19,"t":761,"ax":482,"ay":2164},{"x":748,"y":293,"w":58,"h":65,"a":"title","z":20,"t":691,"ax":203,"ay":3162},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":21,"t":0,"ax":0,"ay":3092},{"x":102,"y":115,"w":392,"h":50,"a":"pop","z":22,"t":300,"ax":395,"ay":3162},{"x":852,"y":311,"w":351,"h":30,"a":"text","z":23,"t":722,"ax":789,"ay":3162},{"x":231,"y":632,"w":357,"h":29,"a":"text","z":24,"t":1566,"ax":1142,"ay":3162},{"x":232,"y":793,"w":239,"h":22,"a":"pop","z":25,"t":1918,"ax":599,"ay":3230},{"x":852,"y":628,"w":122,"h":27,"a":"pop","z":26,"t":1535,"ax":1742,"ay":3162},{"x":850,"y":792,"w":239,"h":29,"a":"text","z":27,"t":2059,"ax":1501,"ay":3162},{"x":232,"y":471,"w":304,"h":27,"a":"text","z":28,"t":972,"ax":0,"ay":3230},{"x":852,"y":473,"w":154,"h":22,"a":"pop","z":29,"t":1183,"ax":840,"ay":3230},{"x":1400,"y":637,"w":360,"h":107,"a":"text","z":30,"t":1637,"ax":0,"ay":2983},{"x":1878,"y":1026,"w":24,"h":17,"a":"text","z":31,"t":2129,"ax":996,"ay":3230},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":32,"t":370,"ax":1022,"ay":3230}],"links":[],"ah":3257},"13":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":800,"w":200,"h":280,"a":"card","z":2,"t":1820,"ax":604,"ay":3246},{"x":1360,"y":0,"w":560,"h":1080,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":2164},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":4,"t":0,"ax":0,"ay":3693},{"x":1401,"y":117,"w":519,"h":728,"a":"zoom","z":5,"t":300,"ax":562,"ay":2164},{"x":1142,"y":0,"w":360,"h":280,"a":"decor","z":6,"t":1472,"ax":806,"ay":3246},{"x":100,"y":300,"w":300,"h":310,"a":"card","z":7,"t":490,"ax":1083,"ay":2164},{"x":432,"y":300,"w":300,"h":310,"a":"card","z":8,"t":680,"ax":1385,"ay":2164},{"x":764,"y":300,"w":300,"h":310,"a":"card","z":9,"t":870,"ax":1687,"ay":2164},{"x":266,"y":642,"w":300,"h":310,"a":"card","z":10,"t":1440,"ax":0,"ay":3246},{"x":213,"y":343,"w":85,"h":135,"a":"text","z":11,"t":670,"ax":1308,"ay":3246},{"x":499,"y":379,"w":128,"h":63,"a":"text","z":12,"t":1060,"ax":0,"ay":3763},{"x":518,"y":343,"w":147,"h":135,"a":"text","z":13,"t":860,"ax":1395,"ay":3246},{"x":864,"y":343,"w":99,"h":135,"a":"text","z":14,"t":1050,"ax":1544,"ay":3246},{"x":347,"y":685,"w":138,"h":136,"a":"pop","z":15,"t":1620,"ax":1168,"ay":3246},{"x":598,"y":642,"w":300,"h":310,"a":"card","z":16,"t":1630,"ax":302,"ay":3246},{"x":100,"y":258,"w":140,"h":10,"a":"growx","z":17,"t":395,"ax":1265,"ay":3763},{"x":669,"y":93,"w":49,"h":80,"a":"decor","z":18,"t":960,"ax":850,"ay":3558},{"x":663,"y":704,"w":170,"h":97,"a":"text","z":19,"t":1810,"ax":678,"ay":3558},{"x":140,"y":511,"w":221,"h":51,"a":"text","z":20,"t":1155,"ax":370,"ay":3763},{"x":470,"y":512,"w":225,"h":50,"a":"text","z":21,"t":1250,"ax":768,"ay":3763},{"x":792,"y":527,"w":243,"h":24,"a":"text","z":22,"t":1345,"ax":995,"ay":3763},{"x":297,"y":853,"w":238,"h":56,"a":"text","z":23,"t":1915,"ax":130,"ay":3763},{"x":661,"y":853,"w":173,"h":51,"a":"text","z":24,"t":2010,"ax":593,"ay":3763},{"x":1878,"y":1026,"w":23,"h":17,"a":"pop","z":25,"t":2105,"ax":1240,"ay":3763},{"x":105,"y":92,"w":676,"h":133,"a":"title","z":26,"t":150,"ax":0,"ay":3558}],"links":[],"ah":3826},"14":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":820,"w":180,"h":260,"a":"card","z":2,"t":1620,"ax":1406,"ay":3246},{"x":1238,"y":0,"w":682,"h":1080,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":2164},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":4,"t":0,"ax":0,"ay":3954},{"x":1298,"y":0,"w":622,"h":1080,"a":"photo","z":5,"t":250,"o":"r","ax":684,"ay":2164},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":6,"t":410,"ax":1656,"ay":4024},{"x":100,"y":115,"w":849,"h":50,"a":"card","z":7,"t":300,"ax":0,"ay":4024},{"x":1142,"y":0,"w":360,"h":280,"a":"decor","z":8,"t":829,"ax":1044,"ay":3246},{"x":1877,"y":1026,"w":25,"h":17,"a":"text","z":9,"t":1730,"ax":1629,"ay":4024},{"x":100,"y":290,"w":520,"h":580,"a":"card","z":10,"t":520,"ax":1308,"ay":2164},{"x":100,"y":290,"w":520,"h":580,"a":"card","z":11,"t":630,"ax":0,"ay":3246},{"x":660,"y":290,"w":520,"h":580,"a":"card","z":12,"t":850,"ax":522,"ay":3246},{"x":150,"y":340,"w":60,"h":8,"a":"growx","z":13,"t":810,"ax":1798,"ay":4024},{"x":710,"y":340,"w":60,"h":8,"a":"growx","z":14,"t":1030,"ax":1860,"ay":4024},{"x":152,"y":373,"w":381,"h":32,"a":"text","z":15,"t":1070,"ax":1246,"ay":4024},{"x":712,"y":372,"w":393,"h":33,"a":"text","z":16,"t":1180,"ax":851,"ay":4024},{"x":152,"y":438,"w":258,"h":189,"a":"card","z":17,"t":1290,"ax":1588,"ay":3246},{"x":152,"y":692,"w":380,"h":124,"a":"text","z":18,"t":1510,"ax":0,"ay":3828},{"x":711,"y":439,"w":290,"h":89,"a":"text","z":19,"t":1400,"ax":382,"ay":3828}],"links":[],"ah":4074},"15":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":0,"w":816,"h":229,"a":"card","z":2,"t":300,"ax":1104,"ay":2164},{"x":818,"y":0,"w":1102,"h":1080,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":2164},{"x":18,"y":285,"w":482,"h":90,"a":"card","z":4,"t":480,"ax":0,"ay":3246},{"x":31,"y":299,"w":63,"h":62,"a":"pop","z":5,"t":660,"ax":256,"ay":3706},{"x":18,"y":403,"w":482,"h":90,"a":"card","z":6,"t":840,"ax":484,"ay":3246},{"x":31,"y":417,"w":63,"h":62,"a":"pop","z":7,"t":1020,"ax":321,"ay":3706},{"x":18,"y":521,"w":482,"h":90,"a":"card","z":8,"t":1200,"ax":968,"ay":3246},{"x":31,"y":535,"w":63,"h":62,"a":"pop","z":9,"t":1380,"ax":386,"ay":3706},{"x":18,"y":639,"w":482,"h":90,"a":"card","z":10,"t":1560,"ax":1452,"ay":3246},{"x":31,"y":653,"w":63,"h":62,"a":"pop","z":11,"t":1740,"ax":451,"ay":3706},{"x":18,"y":757,"w":482,"h":90,"a":"card","z":12,"t":2010,"ax":0,"ay":3338},{"x":31,"y":771,"w":63,"h":62,"a":"pop","z":13,"t":2190,"ax":516,"ay":3706},{"x":525,"y":285,"w":420,"h":90,"a":"card","z":14,"t":660,"ax":484,"ay":3338},{"x":525,"y":403,"w":420,"h":90,"a":"card","z":15,"t":930,"ax":906,"ay":3338},{"x":525,"y":521,"w":420,"h":90,"a":"card","z":16,"t":1380,"ax":1328,"ay":3338},{"x":525,"y":639,"w":420,"h":90,"a":"card","z":17,"t":1785,"ax":0,"ay":3430},{"x":525,"y":757,"w":420,"h":90,"a":"card","z":18,"t":2100,"ax":422,"ay":3430},{"x":965,"y":285,"w":420,"h":90,"a":"card","z":19,"t":750,"ax":844,"ay":3430},{"x":965,"y":403,"w":420,"h":90,"a":"card","z":20,"t":975,"ax":1266,"ay":3430},{"x":965,"y":521,"w":420,"h":90,"a":"card","z":21,"t":1470,"ax":0,"ay":3522},{"x":965,"y":639,"w":420,"h":90,"a":"card","z":22,"t":1920,"ax":422,"ay":3522},{"x":965,"y":757,"w":420,"h":90,"a":"card","z":23,"t":2145,"ax":844,"ay":3522},{"x":18,"y":875,"w":482,"h":90,"a":"card","z":24,"t":2370,"ax":1266,"ay":3522},{"x":31,"y":889,"w":63,"h":62,"a":"pop","z":25,"t":2550,"ax":581,"ay":3706},{"x":525,"y":875,"w":860,"h":90,"a":"card","z":26,"t":2550,"ax":0,"ay":3614},{"x":44,"y":308,"w":29,"h":44,"a":"text","z":27,"t":840,"ax":1702,"ay":3706},{"x":34,"y":432,"w":49,"h":32,"a":"text","z":28,"t":1200,"ax":1774,"ay":3706},{"x":44,"y":548,"w":39,"h":34,"a":"text","z":29,"t":1560,"ax":1733,"ay":3706},{"x":33,"y":676,"w":44,"h":22,"a":"text","z":30,"t":1920,"ax":401,"ay":3812},{"x":40,"y":664,"w":50,"h":46,"a":"text","z":31,"t":1920,"ax":1598,"ay":3706},{"x":40,"y":780,"w":47,"h":48,"a":"text","z":32,"t":2370,"ax":1549,"ay":3706},{"x":33,"y":897,"w":50,"h":46,"a":"text","z":33,"t":2730,"ax":1650,"ay":3706},{"x":29,"y":81,"w":759,"h":80,"a":"card","z":34,"t":480,"ax":862,"ay":3614},{"x":157,"y":317,"w":288,"h":30,"a":"text","z":35,"t":660,"ax":319,"ay":3779},{"x":187,"y":434,"w":225,"h":29,"a":"text","z":36,"t":1065,"ax":609,"ay":3779},{"x":141,"y":551,"w":317,"h":31,"a":"text","z":37,"t":1380,"ax":0,"ay":3779},{"x":174,"y":670,"w":253,"h":24,"a":"pop","z":38,"t":1740,"ax":0,"ay":3812},{"x":1086,"y":239,"w":178,"h":21,"a":"pop","z":39,"t":435,"ax":447,"ay":3812},{"x":1103,"y":319,"w":144,"h":23,"a":"text","z":40,"t":930,"ax":255,"ay":3812},{"x":1067,"y":436,"w":216,"h":25,"a":"text","z":41,"t":1155,"ax":1073,"ay":3779},{"x":1123,"y":555,"w":105,"h":18,"a":"growx","z":42,"t":1650,"ax":1097,"ay":3812},{"x":174,"y":767,"w":254,"h":71,"a":"text","z":43,"t":2190,"ax":0,"ay":3706},{"x":1042,"y":657,"w":261,"h":53,"a":"text","z":44,"t":2100,"ax":906,"ay":3706},{"x":671,"y":659,"w":128,"h":21,"a":"pop","z":45,"t":1965,"ax":627,"ay":3812},{"x":687,"y":688,"w":97,"h":19,"a":"growx","z":46,"t":1965,"ax":757,"ay":3812},{"x":579,"y":436,"w":312,"h":25,"a":"text","z":47,"t":1110,"ax":1291,"ay":3779},{"x":704,"y":319,"w":62,"h":19,"a":"growx","z":48,"t":840,"ax":856,"ay":3812},{"x":709,"y":555,"w":52,"h":18,"a":"growx","z":49,"t":1560,"ax":1204,"ay":3812},{"x":606,"y":775,"w":258,"h":58,"a":"text","z":50,"t":2280,"ax":646,"ay":3706},{"x":986,"y":775,"w":378,"h":53,"a":"text","z":51,"t":2325,"ax":1169,"ay":3706},{"x":182,"y":906,"w":235,"h":29,"a":"text","z":52,"t":2550,"ax":836,"ay":3779},{"x":990,"y":883,"w":370,"h":76,"a":"text","z":53,"t":2730,"ax":1623,"ay":3614},{"x":543,"y":909,"w":385,"h":25,"a":"text","z":54,"t":2730,"ax":1605,"ay":3779},{"x":1877,"y":1026,"w":25,"h":17,"a":"text","z":55,"t":2685,"ax":1258,"ay":3812},{"x":648,"y":241,"w":175,"h":19,"a":"growx","z":56,"t":390,"ax":920,"ay":3812}],"links":[],"ah":3836},"16":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":111,"y":704,"w":1701,"h":268,"a":"slam","z":2,"t":1500,"ax":300,"ay":2164},{"x":1468,"y":228,"w":298,"h":476,"a":"photo","z":3,"t":250,"o":"c","ax":0,"ay":2164},{"x":196,"y":710,"w":252,"h":231,"a":"decor","z":4,"t":1950,"ax":0,"ay":2642},{"x":529,"y":92,"w":755,"h":100,"a":"card","z":5,"t":300,"ax":254,"ay":2642},{"x":661,"y":804,"w":560,"h":67,"a":"pop","z":6,"t":1950,"ax":1011,"ay":2642},{"x":1877,"y":1026,"w":25,"h":17,"a":"text","z":7,"t":520,"ax":1573,"ay":2642}],"links":[],"ah":2873},"17":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":2,"t":0,"ax":0,"ay":3692},{"x":100,"y":300,"w":400,"h":545,"a":"card","z":3,"t":440,"ax":0,"ay":2164},{"x":100,"y":300,"w":400,"h":545,"a":"card","z":4,"t":511,"ax":402,"ay":2164},{"x":100,"y":303,"w":400,"h":213,"a":"card","z":5,"t":691,"ax":1206,"ay":2711},{"x":100,"y":438,"w":400,"h":104,"a":"card","z":6,"t":1566,"ax":335,"ay":3473},{"x":112,"y":406,"w":375,"h":35,"a":"text","z":7,"t":1285,"ax":1319,"ay":3762},{"x":131,"y":578,"w":357,"h":143,"a":"text","z":8,"t":1848,"ax":1449,"ay":3258},{"x":540,"y":300,"w":400,"h":545,"a":"card","z":9,"t":651,"ax":804,"ay":2164},{"x":540,"y":300,"w":400,"h":545,"a":"card","z":10,"t":722,"ax":1206,"ay":2164},{"x":540,"y":303,"w":400,"h":213,"a":"card","z":11,"t":902,"ax":1608,"ay":2711},{"x":540,"y":438,"w":400,"h":104,"a":"card","z":12,"t":1637,"ax":737,"ay":3473},{"x":607,"y":385,"w":268,"h":79,"a":"text","z":13,"t":1355,"ax":0,"ay":3611},{"x":570,"y":577,"w":328,"h":200,"a":"text","z":14,"t":1918,"ax":804,"ay":3258},{"x":980,"y":300,"w":400,"h":545,"a":"card","z":15,"t":862,"ax":1608,"ay":2164},{"x":980,"y":300,"w":400,"h":545,"a":"card","z":16,"t":933,"ax":0,"ay":2711},{"x":980,"y":303,"w":400,"h":213,"a":"card","z":17,"t":1113,"ax":0,"ay":3258},{"x":980,"y":438,"w":400,"h":104,"a":"card","z":18,"t":1707,"ax":1139,"ay":3473},{"x":998,"y":406,"w":365,"h":35,"a":"text","z":19,"t":1425,"ax":0,"ay":3821},{"x":1010,"y":577,"w":313,"h":170,"a":"text","z":20,"t":1988,"ax":1134,"ay":3258},{"x":1420,"y":300,"w":400,"h":545,"a":"card","z":21,"t":1074,"ax":402,"ay":2711},{"x":1420,"y":300,"w":400,"h":545,"a":"card","z":22,"t":1144,"ax":804,"ay":2711},{"x":1420,"y":303,"w":400,"h":213,"a":"card","z":23,"t":1324,"ax":402,"ay":3258},{"x":1420,"y":438,"w":400,"h":104,"a":"card","z":24,"t":1777,"ax":1541,"ay":3473},{"x":1440,"y":383,"w":359,"h":74,"a":"text","z":25,"t":1504,"ax":270,"ay":3611},{"x":1449,"y":578,"w":333,"h":136,"a":"text","z":26,"t":2059,"ax":0,"ay":3473},{"x":101,"y":102,"w":1317,"h":57,"a":"card","z":27,"t":300,"ax":0,"ay":3762},{"x":1879,"y":1026,"w":22,"h":17,"a":"text","z":28,"t":2129,"ax":367,"ay":3821},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":29,"t":370,"ax":391,"ay":3821}],"links":[],"ah":3856},"18":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":109,"y":38,"w":607,"h":60,"a":"card","z":2,"t":300,"ax":1240,"ay":3423},{"x":0,"y":108,"w":1238,"h":74,"a":"card","z":3,"t":382,"ax":0,"ay":3423},{"x":58,"y":229,"w":930,"h":405,"a":"zoom","z":4,"t":465,"ax":0,"ay":2164},{"x":58,"y":579,"w":930,"h":405,"a":"zoom","z":5,"t":1291,"ax":932,"ay":2164},{"x":932,"y":229,"w":930,"h":405,"a":"zoom","z":6,"t":630,"ax":0,"ay":2571},{"x":932,"y":579,"w":930,"h":405,"a":"zoom","z":7,"t":1456,"ax":932,"ay":2571},{"x":982,"y":279,"w":174,"h":306,"a":"card","z":8,"t":810,"ax":1864,"ay":2571},{"x":982,"y":628,"w":174,"h":306,"a":"card","z":9,"t":1636,"ax":0,"ay":2978},{"x":108,"y":279,"w":174,"h":306,"a":"card","z":10,"t":645,"ax":176,"ay":2978},{"x":108,"y":628,"w":174,"h":306,"a":"card","z":11,"t":1471,"ax":352,"ay":2978},{"x":141,"y":379,"w":107,"h":107,"a":"text","z":12,"t":960,"ax":823,"ay":3286},{"x":133,"y":726,"w":123,"h":111,"a":"text","z":13,"t":1786,"ax":585,"ay":3286},{"x":1006,"y":370,"w":125,"h":124,"a":"text","z":14,"t":1126,"ax":458,"ay":3286},{"x":1013,"y":726,"w":111,"h":111,"a":"text","z":15,"t":1952,"ax":710,"ay":3286},{"x":316,"y":317,"w":201,"h":39,"a":"text","z":16,"t":795,"ax":0,"ay":3499},{"x":316,"y":666,"w":151,"h":40,"a":"text","z":17,"t":1621,"ax":1849,"ay":3423},{"x":1189,"y":317,"w":386,"h":31,"a":"text","z":18,"t":878,"ax":203,"ay":3499},{"x":1190,"y":666,"w":482,"h":31,"a":"text","z":19,"t":1704,"ax":591,"ay":3499},{"x":336,"y":376,"w":547,"h":141,"a":"card","z":20,"t":1043,"ax":528,"ay":2978},{"x":336,"y":726,"w":456,"h":135,"a":"text","z":21,"t":1869,"ax":0,"ay":3286},{"x":1210,"y":376,"w":388,"h":141,"a":"card","z":22,"t":1208,"ax":1077,"ay":2978},{"x":1210,"y":726,"w":558,"h":141,"a":"card","z":23,"t":2034,"ax":1467,"ay":2978},{"x":1877,"y":1026,"w":25,"h":17,"a":"pop","z":24,"t":2117,"ax":1075,"ay":3499}],"links":[],"ah":3538},"19":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":2,"t":0,"ax":0,"ay":4576},{"x":1501,"y":0,"w":419,"h":1080,"a":"circle","z":3,"t":80,"o":"r","ax":0,"ay":2164},{"x":1101,"y":306,"w":819,"h":774,"a":"circle","z":4,"t":80,"o":"r","ax":0,"ay":3246},{"x":1101,"y":0,"w":437,"h":425,"a":"card","z":5,"t":300,"ax":0,"ay":4022},{"x":987,"y":90,"w":884,"h":881,"a":"breathe","z":6,"t":250,"ax":421,"ay":2164},{"x":1166,"y":802,"w":264,"h":278,"a":"decor","z":7,"t":977,"ax":439,"ay":4022},{"x":1620,"y":0,"w":300,"h":261,"a":"decor","z":8,"t":1434,"ax":705,"ay":4022},{"x":1125,"y":32,"w":198,"h":199,"a":"card","z":9,"t":480,"ax":1007,"ay":4022},{"x":1756,"y":669,"w":164,"h":199,"a":"card","z":10,"t":1400,"ax":1207,"ay":4022},{"x":1682,"y":351,"w":170,"h":168,"a":"decor","z":11,"t":862,"ax":1580,"ay":4022},{"x":100,"y":360,"w":820,"h":580,"a":"circle","z":12,"t":80,"o":"c","ax":821,"ay":3246},{"x":880,"y":88,"w":205,"h":195,"a":"card","z":13,"t":630,"ax":1373,"ay":4022},{"x":103,"y":85,"w":547,"h":125,"a":"card","z":14,"t":520,"ax":0,"ay":4449},{"x":102,"y":283,"w":348,"h":27,"a":"text","z":15,"t":850,"ax":1414,"ay":4681},{"x":187,"y":481,"w":626,"h":26,"a":"text","z":16,"t":960,"ax":0,"ay":4715},{"x":187,"y":542,"w":664,"h":33,"a":"text","z":17,"t":1070,"ax":0,"ay":4646},{"x":187,"y":605,"w":719,"h":32,"a":"text","z":18,"t":1180,"ax":0,"ay":4681},{"x":187,"y":667,"w":691,"h":32,"a":"text","z":19,"t":1290,"ax":721,"ay":4681},{"x":187,"y":728,"w":603,"h":33,"a":"text","z":20,"t":1510,"ax":666,"ay":4646},{"x":187,"y":790,"w":657,"h":33,"a":"text","z":21,"t":1620,"ax":1271,"ay":4646},{"x":100,"y":246,"w":140,"h":10,"a":"growx","z":22,"t":740,"ax":654,"ay":4715},{"x":1877,"y":1026,"w":24,"h":17,"a":"pop","z":23,"t":1730,"ax":628,"ay":4715}],"links":[],"ah":4741},"20":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":820,"w":180,"h":260,"a":"card","z":2,"t":1840,"ax":503,"ay":3008},{"x":1586,"y":311,"w":334,"h":535,"a":"zoom","z":3,"t":960,"ax":0,"ay":2164},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":4,"t":0,"ax":0,"ay":3394},{"x":100,"y":600,"w":960,"h":325,"a":"card","z":5,"t":1400,"ax":336,"ay":2164},{"x":100,"y":260,"w":960,"h":305,"a":"card","z":6,"t":630,"ax":0,"ay":2701},{"x":100,"y":260,"w":960,"h":305,"a":"card","z":7,"t":740,"ax":962,"ay":2701},{"x":1641,"y":60,"w":204,"h":194,"a":"card","z":8,"t":300,"ax":685,"ay":3008},{"x":100,"y":115,"w":979,"h":50,"a":"card","z":9,"t":410,"ax":0,"ay":3464},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":10,"t":520,"ax":1351,"ay":3516},{"x":1085,"y":416,"w":501,"h":264,"a":"card","z":11,"t":1180,"ax":0,"ay":3008},{"x":169,"y":308,"w":769,"h":28,"a":"text","z":12,"t":920,"ax":981,"ay":3464},{"x":169,"y":354,"w":795,"h":118,"a":"text","z":13,"t":1070,"ax":0,"ay":3274},{"x":1139,"y":476,"w":432,"h":142,"a":"card","z":14,"t":1360,"ax":891,"ay":3008},{"x":151,"y":650,"w":203,"h":20,"a":"growx","z":15,"t":1580,"ax":1117,"ay":3516},{"x":171,"y":695,"w":774,"h":28,"a":"text","z":16,"t":1620,"ax":0,"ay":3516},{"x":171,"y":745,"w":794,"h":72,"a":"text","z":17,"t":1730,"ax":797,"ay":3274},{"x":197,"y":836,"w":339,"h":22,"a":"text","z":18,"t":1950,"ax":776,"ay":3516},{"x":1876,"y":1026,"w":27,"h":17,"a":"pop","z":19,"t":2060,"ax":1322,"ay":3516}],"links":[],"ah":3544},"21":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":0,"w":1205,"h":253,"a":"card","z":2,"t":300,"ax":0,"ay":3246},{"x":1270,"y":0,"w":650,"h":1080,"a":"photo","z":3,"t":250,"o":"r","ax":0,"ay":2164},{"x":0,"y":597,"w":799,"h":226,"a":"zoom","z":4,"t":1180,"ax":1207,"ay":3246},{"x":0,"y":492,"w":799,"h":226,"a":"zoom","z":5,"t":1070,"ax":0,"ay":3501},{"x":0,"y":388,"w":799,"h":224,"a":"zoom","z":6,"t":740,"ax":801,"ay":3729},{"x":0,"y":283,"w":799,"h":225,"a":"zoom","z":7,"t":630,"ax":0,"ay":3729},{"x":0,"y":177,"w":799,"h":226,"a":"zoom","z":8,"t":410,"ax":801,"ay":3501},{"x":113,"y":279,"w":515,"h":23,"a":"text","z":9,"t":810,"ax":1342,"ay":4016},{"x":99,"y":369,"w":543,"h":53,"a":"text","z":10,"t":920,"ax":974,"ay":3956},{"x":63,"y":474,"w":614,"h":49,"a":"text","z":11,"t":1250,"ax":0,"ay":4016},{"x":178,"y":594,"w":384,"h":19,"a":"growx","z":12,"t":1360,"ax":0,"ay":4067},{"x":70,"y":685,"w":601,"h":48,"a":"text","z":13,"t":1400,"ax":616,"ay":4016},{"x":0,"y":723,"w":1281,"h":335,"a":"zoom","z":14,"t":1510,"ax":652,"ay":2164},{"x":149,"y":884,"w":972,"h":58,"a":"text","z":15,"t":1730,"ax":0,"ay":3956},{"x":575,"y":835,"w":121,"h":25,"a":"pop","z":16,"t":1690,"ax":1219,"ay":4016},{"x":1878,"y":1026,"w":24,"h":17,"a":"text","z":17,"t":1840,"ax":386,"ay":4067}],"links":[],"ah":4086},"22":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":1238,"y":0,"w":682,"h":1080,"a":"circle","z":2,"t":80,"o":"r","ax":0,"ay":2164},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":3,"t":0,"ax":0,"ay":4450},{"x":1313,"y":0,"w":607,"h":1067,"a":"photo","z":4,"t":250,"o":"r","ax":684,"ay":2164},{"x":105,"y":102,"w":909,"h":62,"a":"title","z":5,"t":150,"ax":0,"ay":4520},{"x":1878,"y":1026,"w":24,"h":17,"a":"text","z":6,"t":1400,"ax":1311,"ay":4655},{"x":100,"y":280,"w":1080,"h":600,"a":"circle","z":7,"t":80,"o":"c","ax":0,"ay":3246},{"x":100,"y":280,"w":1080,"h":600,"a":"circle","z":8,"t":80,"o":"c","ax":0,"ay":3848},{"x":100,"y":280,"w":12,"h":600,"a":"pop","z":9,"t":410,"ax":1082,"ay":3848},{"x":100,"y":195,"w":140,"h":8,"a":"growx","z":10,"t":300,"ax":1337,"ay":4655},{"x":203,"y":344,"w":871,"h":27,"a":"text","z":11,"t":520,"ax":0,"ay":4655},{"x":196,"y":407,"w":730,"h":34,"a":"text","z":12,"t":630,"ax":911,"ay":4520},{"x":231,"y":471,"w":702,"h":33,"a":"text","z":13,"t":740,"ax":0,"ay":4620},{"x":197,"y":534,"w":815,"h":34,"a":"text","z":14,"t":850,"ax":0,"ay":4584},{"x":228,"y":598,"w":327,"h":26,"a":"text","z":15,"t":960,"ax":873,"ay":4655},{"x":196,"y":661,"w":916,"h":33,"a":"text","z":16,"t":1070,"ax":704,"ay":4620},{"x":197,"y":724,"w":851,"h":34,"a":"text","z":17,"t":1180,"ax":817,"ay":4584},{"x":230,"y":788,"w":107,"h":26,"a":"text","z":18,"t":1290,"ax":1202,"ay":4655}],"links":[],"ah":4682},"23":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":1224,"y":503,"w":230,"h":100,"a":"text","z":2,"t":850,"ax":749,"ay":3528},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":3,"t":0,"ax":0,"ay":4059},{"x":100,"y":114,"w":1372,"h":43,"a":"card","z":4,"t":300,"ax":0,"ay":4194},{"x":100,"y":260,"w":840,"h":680,"a":"circle","z":5,"t":80,"o":"c","ax":0,"ay":2164},{"x":100,"y":260,"w":840,"h":680,"a":"circle","z":6,"t":80,"o":"c","ax":842,"ay":2164},{"x":100,"y":260,"w":12,"h":680,"a":"pop","z":7,"t":520,"ax":1684,"ay":2164},{"x":1000,"y":260,"w":820,"h":680,"a":"circle","z":8,"t":80,"o":"c","ax":0,"ay":2846},{"x":1000,"y":260,"w":820,"h":680,"a":"circle","z":9,"t":80,"o":"c","ax":822,"ay":2846},{"x":168,"y":367,"w":677,"h":62,"a":"text","z":10,"t":630,"ax":714,"ay":4129},{"x":168,"y":477,"w":700,"h":100,"a":"text","z":11,"t":740,"ax":981,"ay":3528},{"x":168,"y":625,"w":712,"h":63,"a":"text","z":12,"t":960,"ax":0,"ay":4129},{"x":168,"y":736,"w":689,"h":95,"a":"text","z":13,"t":1180,"ax":0,"ay":3962},{"x":1030,"y":371,"w":747,"h":432,"a":"photo","z":14,"t":250,"o":"c","ax":0,"ay":3528},{"x":1302,"y":672,"w":4,"h":4,"a":"pop","z":15,"t":1070,"ax":1543,"ay":4194},{"x":1877,"y":1026,"w":25,"h":17,"a":"pop","z":16,"t":1290,"ax":1374,"ay":4194},{"x":100,"y":190,"w":140,"h":8,"a":"growx","z":17,"t":410,"ax":1401,"ay":4194}],"links":[],"ah":4237},"24":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":105,"y":115,"w":836,"h":49,"a":"card","z":2,"t":410,"ax":0,"ay":3598},{"x":1600,"y":0,"w":320,"h":280,"a":"card","z":3,"t":300,"ax":1532,"ay":2846},{"x":0,"y":860,"w":140,"h":220,"a":"card","z":4,"t":1400,"ax":1854,"ay":2846},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":5,"t":520,"ax":578,"ay":3683},{"x":100,"y":260,"w":840,"h":680,"a":"circle","z":6,"t":80,"o":"c","ax":0,"ay":2164},{"x":1000,"y":260,"w":820,"h":680,"a":"circle","z":7,"t":80,"o":"c","ax":842,"ay":2164},{"x":1000,"y":260,"w":820,"h":680,"a":"circle","z":8,"t":80,"o":"c","ax":0,"ay":2846},{"x":183,"y":419,"w":649,"h":32,"a":"text","z":9,"t":630,"ax":838,"ay":3598},{"x":215,"y":477,"w":549,"h":25,"a":"text","z":10,"t":850,"ax":0,"ay":3683},{"x":183,"y":534,"w":667,"h":32,"a":"text","z":11,"t":960,"ax":0,"ay":3649},{"x":215,"y":592,"w":298,"h":31,"a":"text","z":12,"t":1070,"ax":1412,"ay":3649},{"x":183,"y":649,"w":374,"h":32,"a":"text","z":13,"t":1180,"ax":669,"ay":3649},{"x":215,"y":707,"w":365,"h":32,"a":"text","z":14,"t":1290,"ax":1045,"ay":3649},{"x":1058,"y":361,"w":708,"h":459,"a":"zoom","z":15,"t":740,"ax":822,"ay":2846},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":16,"t":0,"ax":0,"ay":3528},{"x":1877,"y":1026,"w":25,"h":17,"a":"text","z":17,"t":1510,"ax":551,"ay":3683}],"links":[],"ah":3708},"25":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":2,"t":0,"ax":0,"ay":2164},{"x":1703,"y":0,"w":206,"h":187,"a":"decor","z":3,"t":1223,"ax":1521,"ay":3928},{"x":100,"y":260,"w":840,"h":680,"a":"circle","z":4,"t":80,"o":"c","ax":0,"ay":3246},{"x":105,"y":115,"w":279,"h":48,"a":"pop","z":5,"t":300,"ax":0,"ay":4680},{"x":1000,"y":260,"w":820,"h":680,"a":"circle","z":6,"t":80,"o":"c","ax":842,"ay":3246},{"x":1000,"y":260,"w":820,"h":680,"a":"circle","z":7,"t":80,"o":"c","ax":0,"ay":3928},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":8,"t":410,"ax":1742,"ay":4730},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":9,"t":0,"ax":0,"ay":4610},{"x":1066,"y":399,"w":697,"h":431,"a":"zoom","z":10,"t":520,"ax":822,"ay":3928},{"x":186,"y":450,"w":609,"h":31,"a":"text","z":11,"t":630,"ax":954,"ay":4680},{"x":1186,"y":497,"w":295,"h":179,"a":"text","z":12,"t":850,"ax":1729,"ay":3928},{"x":215,"y":507,"w":626,"h":31,"a":"text","z":13,"t":740,"ax":0,"ay":4730},{"x":186,"y":563,"w":575,"h":26,"a":"text","z":14,"t":960,"ax":953,"ay":4730},{"x":215,"y":621,"w":183,"h":25,"a":"text","z":15,"t":1070,"ax":1530,"ay":4730},{"x":186,"y":677,"w":671,"h":32,"a":"text","z":16,"t":1180,"ax":281,"ay":4680},{"x":215,"y":735,"w":323,"h":31,"a":"text","z":17,"t":1290,"ax":628,"ay":4730},{"x":1877,"y":1026,"w":25,"h":17,"a":"text","z":18,"t":1400,"ax":1715,"ay":4730}],"links":[],"ah":4761},"26":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":2,"t":0,"ax":0,"ay":2164},{"x":100,"y":290,"w":960,"h":640,"a":"circle","z":3,"t":80,"o":"c","ax":0,"ay":3246},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":4,"t":0,"ax":0,"ay":3888},{"x":100,"y":236,"w":140,"h":10,"a":"growx","z":5,"t":300,"ax":0,"ay":3958},{"x":182,"y":360,"w":807,"h":500,"a":"text","z":6,"t":410,"ax":962,"ay":3246},{"x":1876,"y":1026,"w":26,"h":17,"a":"text","z":7,"t":520,"ax":1922,"ay":3888}],"links":[],"ah":3968},"28":{"els":[{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":0,"t":0,"ax":0,"ay":0},{"x":0,"y":0,"w":1920,"h":1080,"a":"static","z":1,"t":0,"ax":0,"ay":1082},{"x":1238,"y":0,"w":682,"h":1080,"a":"circle","z":2,"t":80,"o":"r","ax":0,"ay":2164},{"x":0,"y":1012,"w":1920,"h":68,"a":"static","z":3,"t":0,"ax":0,"ay":4080},{"x":1298,"y":0,"w":622,"h":1080,"a":"photo","z":4,"t":250,"o":"r","ax":684,"ay":2164},{"x":103,"y":115,"w":319,"h":57,"a":"pop","z":5,"t":300,"ax":0,"ay":4150},{"x":1142,"y":0,"w":360,"h":280,"a":"decor","z":6,"t":1275,"ax":1082,"ay":3246},{"x":100,"y":192,"w":140,"h":10,"a":"growx","z":7,"t":410,"ax":880,"ay":4209},{"x":1877,"y":1026,"w":25,"h":17,"a":"pop","z":8,"t":850,"ax":853,"ay":4209},{"x":108,"y":252,"w":1080,"h":601,"a":"circle","z":9,"t":80,"o":"c","ax":0,"ay":3246},{"x":222,"y":283,"w":859,"h":55,"a":"title","z":10,"t":150,"ax":321,"ay":4150},{"x":222,"y":387,"w":793,"h":55,"a":"text","z":11,"t":520,"ax":1182,"ay":4150},{"x":222,"y":491,"w":745,"h":229,"a":"text","z":12,"t":630,"ax":0,"ay":3849},{"x":207,"y":770,"w":851,"h":54,"a":"text","z":13,"t":740,"ax":0,"ay":4209}],"links":[{"u":"https://www.aok.de/pk/magazin/koerper-psyche/organe/pneumonie-ursachen-und-symptome-einer-lungenentzuendung/","x":242,"y":266,"w":839,"h":29},{"u":"https://www.aok.de/pk/magazin/koerper-psyche/organe/pneumonie-ursachen-und-symptome-einer-lungenentzuendung/","x":242,"y":301,"w":447,"h":29},{"u":"https://www.ndr.de/ratgeber/gesundheit/Lungenentzuendung-Ursachen-Symptome-und-Behandlung,lungenentzuendung116.html","x":242,"y":371,"w":772,"h":29},{"u":"https://www.ndr.de/ratgeber/gesundheit/Lungenentzuendung-Ursachen-Symptome-und-Behandlung,lungenentzuendung116.html","x":242,"y":406,"w":587,"h":29}],"ah":4263}};
+const TRANS={"4": "cube", "7": "cube", "13": "cube", "17": "cube", "20": "cube", "27": "cube", "6": "warp", "16": "warp", "29": "warp", "10": "flip", "22": "flip", "25": "flip"};
+(function(){
+const stage=document.getElementById('stage');
+
+/* ---- build generated slides ---- */
+const TOUCH=matchMedia('(pointer:coarse)').matches||('ontouchstart' in window);
+const LOW=TOUCH||Math.max(screen.width,screen.height)<1400;
+if(TOUCH)document.body.classList.add('touch','lite');
+const STANDALONE=!!navigator.standalone||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+if(STANDALONE)document.body.classList.add('standalone');
+else if(IOS)document.body.classList.add('iosbrowser');
+const ORIG={r:['circle(0% at 100% 50%)','inset(0 0 0 100%)'],l:['circle(0% at 0% 50%)','inset(0 100% 0 0)'],b:['circle(0% at 50% 100%)','inset(100% 0 0 0)'],t:['circle(0% at 50% 0%)','inset(0 0 100% 0)'],c:['circle(0% at 50% 50%)','inset(50% 50% 50% 50%)']};
+document.querySelectorAll('.slide.gen').forEach(sl=>{
+  const d=DATA[sl.dataset.n];const inner=document.createElement('div');inner.className='inner';sl.appendChild(inner);
+  sl.dataset.atlas=('A/s')+String(sl.dataset.n).padStart(2,'0')+'.webp';
+  const spr=(e)=>'background-image:var(--atlas,none);background-position:-'+e.ax+'px -'+e.ay+'px;background-size:2048px auto;background-repeat:no-repeat;';
+  d.els.forEach(e=>{
+    const box='left:'+e.x+'px;top:'+e.y+'px;width:'+e.w+'px;height:'+e.h+'px;';
+    const fill='position:absolute;left:0;top:0;width:100%;height:100%;';
+    let node;
+    if(e.a==='decor'){
+      node=document.createElement('div');node.className='par';const z=(e.w>260?-12:22)+Math.round(Math.random()*14);
+      node.style.cssText=box+'--z:'+z;
+      const w=document.createElement('div');w.className='el anim a-pop';w.style.cssText=fill+'--t:'+e.t+'ms';
+      const im=document.createElement('div');im.className='float';im.style.cssText=fill+spr(e)+'--fd:'+(5+Math.random()*4).toFixed(1)+'s;--fdl:-'+(Math.random()*4).toFixed(1)+'s';
+      w.appendChild(im);node.appendChild(w);
+    }else if(e.a==='breathe'){
+      node=document.createElement('div');node.className='el anim a-zoom';node.style.cssText=box+'--t:'+e.t+'ms';
+      const im=document.createElement('div');im.className='breathe';im.style.cssText=fill+spr(e);node.appendChild(im);
+    }else{
+      node=document.createElement('div');node.className='el'+(e.a==='static'?'':' anim a-'+e.a);
+      let s=box+spr(e)+'--t:'+e.t+'ms;';
+      if(e.o){s+='--c0:'+ORIG[e.o][0]+';--i0:'+ORIG[e.o][1]+';';}
+      node.style.cssText=s;
+      if(e.a==='slam')node.dataset.slam=e.t;
+    }
+    inner.appendChild(node);
+  });
+  d.links.forEach(l=>{const a=document.createElement('a');a.className='lnk';a.href=l.u;a.target='_blank';a.rel='noopener noreferrer';a.title=l.u;
+    a.style.cssText='left:'+l.x+'px;top:'+l.y+'px;width:'+l.w+'px;height:'+l.h+'px';a.addEventListener('click',ev=>ev.stopPropagation());inner.appendChild(a);});
+});
+
+const slides=[...document.querySelectorAll('.slide')];
+slides.forEach((s,i)=>{s.dataset.trans=TRANS[i+1]||'carousel';});
+let cur=0, step=0, busy=false, started=false;
+
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+s+')';}
+addEventListener('resize',fit);fit();
+
+function stars(id,n,color){const el=document.getElementById(id);if(!el)return;for(let i=0;i<n;i++){const d=document.createElement('i');d.className='twinkle';const s=3+Math.random()*7;d.style.cssText='left:'+(Math.random()*1900)+'px;top:'+(Math.random()*1060)+'px;width:'+s+'px;height:'+s+'px;--tw:'+(2+Math.random()*3)+'s;--twd:'+(-Math.random()*3)+'s;background:'+(Math.random()<.5?color:'#fff');el.appendChild(d);}}
+stars('s1stars',22,'#b69cff');stars('s29stars',46,'#b69cff');
+
+let k=0;['w1','w2'].forEach(id=>{const w=document.getElementById(id);const t=w.textContent;w.textContent='';[...t].forEach(c=>{const s=document.createElement('span');s.className='ch';s.style.setProperty('--k',k++);s.textContent=c;w.appendChild(s);});});
+
+/* quiz */
+const Q=[
+ ['Welcher Teil der Lunge ist bei einer Pneumonie vor allem betroffen?',['Die Luftröhre','Die Lungenbläschen (Alveolen)','Das Zwerchfell'],1,'Die Alveolen füllen sich mit Flüssigkeit – der Gasaustausch ist gestört.'],
+ ['Welcher Erreger ist ein typischer bakterieller Auslöser?',['Pneumokokken','Influenza-Virus','RS-Virus (RSV)'],0,'Pneumokokken sind Bakterien – Influenza und RSV sind Viren.'],
+ ['Peters Sauerstoffsättigung lag bei 92 %. Was ist der Normbereich?',['80–85 %','88–92 %','95–100 %'],2,'Normal sind 95–100 % – Peters Wert liegt darunter.'],
+ ['Was hört der Arzt beim Abhören von Peters Lunge?',['Rasselgeräusche','Normales, vesikuläres Atmen','Gar kein Atemgeräusch'],0,'Normal wäre gleichmäßiges, vesikuläres Atmen.'],
+ ['Was beugt einer Pneumonie vor?',['Vorbeugend Antibiotika nehmen','Pneumokokken- und Grippeimpfung','Weniger trinken'],1,'Impfungen schützen – besonders Risikogruppen.'],
+ ['Peters Fluss-Volumen-Kurve zeigt eine Einbuchtung beim Ausatmen. Worauf weist das hin?',['Restriktive Ventilationsstörung','Gesunde Lungenfunktion','Obstruktive Ventilationsstörung'],2,'Die Atemwege sind verengt – passt zu Peters Asthma.']
+];
+const grid=document.getElementById('quiz');
+Q.forEach((q,qi)=>{
+  const card=document.createElement('div');card.className='q';card.style.setProperty('--i',qi);
+  card.innerHTML='<div class="qh"><div class="num">'+(qi+1)+'</div><div class="qt"></div></div><div class="opts"></div><div class="why"></div>';
+  card.querySelector('.qt').textContent=q[0];card.querySelector('.why').textContent='✓ '+q[3];
+  const opts=card.querySelector('.opts');
+  q[1].forEach((o,oi)=>{
+    const b=document.createElement('button');b.className='opt';b.type='button';
+    b.innerHTML='<span class="l">'+'ABC'[oi]+'</span><span></span>';b.lastChild.textContent=o;
+    b.addEventListener('click',e=>{e.stopPropagation();if(card.classList.contains('solved'))return;
+      const btns=opts.querySelectorAll('.opt');
+      if(oi===q[2]){b.classList.add('right');card.classList.add('solved');}
+      else{b.classList.add('wrong');setTimeout(()=>{btns[q[2]].classList.add('right');card.classList.add('solved');},700);}
+    });
+    opts.appendChild(b);
+  });
+  grid.appendChild(card);
+});
+function resetQuiz(){grid.querySelectorAll('.q').forEach(c=>c.classList.remove('solved'));grid.querySelectorAll('.opt').forEach(b=>b.classList.remove('right','wrong'));}
+
+const cv=document.getElementById('burst'),cx=cv.getContext('2d');let parts=[],raf=0;
+function burst(){parts=[];const cols=['#ffffff','#c9b5ff','#e15cc8','#8b5cf6','#7dd3fc'];
+  for(let i=0;i<220;i++){const a=Math.random()*Math.PI*2,sp=4+Math.random()*16;parts.push({x:1390,y:540,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:2+Math.random()*5,c:cols[i%cols.length],l:1});}
+  cancelAnimationFrame(raf);(function tick(){cx.clearRect(0,0,1920,1080);let alive=0;
+    parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vx*=.955;p.vy=p.vy*.955+.04;p.l-=.009;if(p.l>0){alive++;cx.globalAlpha=Math.max(p.l,0);cx.fillStyle=p.c;cx.shadowBlur=14;cx.shadowColor=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill();}});
+    cx.globalAlpha=1;if(alive)raf=requestAnimationFrame(tick);else cx.clearRect(0,0,1920,1080);})();}
+
+function applySteps(sl,n,instant){
+  sl.querySelectorAll('[data-step]').forEach(el=>{const on=+el.dataset.step<=n;
+    if(instant){el.style.transition='none';el.classList.toggle('on',on);el.offsetHeight;el.style.transition='';}else el.classList.toggle('on',on);});
+  if(sl.id==='s12'){const pos=[0,442,1002,1600];const m=Math.min(n,3);
+    document.getElementById('fill12').style.width=pos[m]+'px';
+    sl.querySelectorAll('.dot').forEach(d=>{const lit=+d.dataset.dot===m&&n<=3;d.classList.toggle('lit',lit);});}
+}
+let timers=[];
+function play(sl){timers.forEach(clearTimeout);timers=[];
+  sl.classList.remove('play');void sl.offsetWidth;sl.classList.add('play');
+  if(sl.id==='s29')timers.push(setTimeout(burst,350));
+  if(sl.id==='s27')resetQuiz();
+  sl.querySelectorAll('[data-slam]').forEach(el=>{timers.push(setTimeout(()=>{
+    const inner=sl.querySelector('.inner');
+    inner.animate([{transform:'none'},{transform:'translate(-14px,8px) rotate(-.4deg)'},{transform:'translate(12px,-6px) rotate(.4deg)'},{transform:'translate(-8px,4px)'},{transform:'translate(5px,-2px)'},{transform:'none'}],{duration:480,easing:'ease-out'});
+    document.getElementById('slamflash').animate([{opacity:0},{opacity:1,offset:.15},{opacity:0}],{duration:900,easing:'ease-out'});
+  },+el.dataset.slam+470));});
+}
+
+const T={
+ carousel:(d)=>({
+   out:[{transform:'translateX(0) rotateY(0) scale(1)',filter:'brightness(1)',opacity:1},{transform:`translateX(${-62*d}%) rotateY(${32*d}deg) scale(.68)`,filter:'brightness(.55)',opacity:0}],
+   inn:[{transform:`translateX(${62*d}%) rotateY(${-32*d}deg) scale(.68)`,filter:'brightness(.55)',opacity:0},{transform:'translateX(0) rotateY(0) scale(1)',filter:'brightness(1)',opacity:1}],
+   dur:1200,ease:'cubic-bezier(.77,0,.18,1)'}),
+ cube:(d)=>({
+   out:[{transform:'translateZ(-960px) rotateY(0deg) translateZ(960px)',filter:'brightness(1)'},{transform:'translateZ(-960px) rotateY(-30deg) translateZ(800px)',filter:'brightness(.8)',offset:.5},{transform:`translateZ(-960px) rotateY(${-90*d}deg) translateZ(960px)`,filter:'brightness(.35)'}],
+   inn:[{transform:`translateZ(-960px) rotateY(${90*d}deg) translateZ(960px)`,filter:'brightness(.35)'},{transform:'translateZ(-960px) rotateY(30deg) translateZ(800px)',filter:'brightness(.8)',offset:.5},{transform:'translateZ(-960px) rotateY(0deg) translateZ(960px)',filter:'brightness(1)'}],
+   dur:1400,ease:'cubic-bezier(.65,0,.35,1)'}),
+ warp:(d)=>({
+   out:[{transform:'scale(1)',filter:'blur(0) brightness(1)',opacity:1},{transform:`scale(${d>0?1.9:.4})`,filter:'blur(18px) brightness(1.8)',opacity:0}],
+   inn:[{transform:`scale(${d>0?.4:1.9})`,filter:'blur(18px) brightness(1.8)',opacity:0},{transform:'scale(1)',filter:'blur(0) brightness(1)',opacity:1}],
+   dur:1300,ease:'cubic-bezier(.7,0,.2,1)',flash:true}),
+ flip:(d)=>({
+   out:[{transform:'rotateX(0deg) translateY(0)',opacity:1,filter:'brightness(1)'},{transform:`rotateX(${70*d}deg) translateY(${-40*d}%) scale(.8)`,opacity:0,filter:'brightness(.5)'}],
+   inn:[{transform:`rotateX(${-70*d}deg) translateY(${40*d}%) scale(.8)`,opacity:0,filter:'brightness(.5)'},{transform:'rotateX(0deg) translateY(0)',opacity:1,filter:'brightness(1)'}],
+   dur:1250,ease:'cubic-bezier(.77,0,.18,1)'})
+};
+function go(to,dir,showAll){
+  if(busy||to<0||to>=slides.length||to===cur)return;
+  busy=true;const from=slides[cur],next=slides[to];
+  const kind=(dir>0?next:from).dataset.trans||'carousel';const t=T[kind](dir);
+  if(TOUCH){[t.out,t.inn].forEach(fr=>fr.forEach(f=>{delete f.filter;}));}
+  setWindow(to);
+  next.classList.add('active');next.classList.remove('play');
+  step=showAll?(+next.dataset.steps||0):0;applySteps(next,step,true);
+  play(next);
+  if(t.flash){document.getElementById('flash').animate([{opacity:0},{opacity:1,offset:.45},{opacity:0}],{duration:t.dur,easing:'ease-in-out'});}
+  from.style.zIndex=1;next.style.zIndex=2;
+  from.animate(t.out,{duration:t.dur,easing:t.ease,fill:'forwards'});
+  const a=next.animate(t.inn,{duration:t.dur,easing:t.ease,fill:'forwards'});
+  a.onfinish=()=>{from.classList.remove('active','play');from.getAnimations().forEach(x=>x.cancel());a.cancel();from.style.zIndex='';next.style.zIndex='';cur=to;busy=false;update();};
+}
+function next(){const sl=slides[cur];const n=+sl.dataset.steps||0;if(step<n){step++;applySteps(sl,step);update();}else go(cur+1,1);}
+function prev(){const sl=slides[cur];if(step>0){step--;applySteps(sl,step);update();}else go(cur-1,-1,true);}
+function update(){let total=0,done=0;slides.forEach((s,i)=>{const n=1+(+s.dataset.steps||0);total+=n;if(i<cur)done+=n;});done+=step+1;document.getElementById('progress').style.width=(done/total*100)+'%';}
+
+if(TOUCH){document.getElementById('hint').textContent='Tippen = weiter · Wischen = vor/zurück';document.querySelector('#start small').textContent='Tippen = weiter · Wischen = vor/zurück';}
+let hinted=false;function hideHint(){if(!hinted){hinted=true;document.getElementById('hint').classList.add('gone');}}
+addEventListener('keydown',e=>{
+  if(!started){if(e.key==='Enter'||e.key===' '){e.preventDefault();begin();}return;}
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){if(document.activeElement&&document.activeElement.classList.contains('opt'))return;e.preventDefault();hideHint();next();}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();hideHint();prev();}
+  else if(e.key==='Home'){go(0,-1);}else if(e.key==='End'){go(slides.length-1,1);}
+  else if(e.key==='f'||e.key==='F'){toggleFull();}
+});
+let tx=0,ty=0,swiped=false;
+addEventListener('touchstart',e=>{const t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;swiped=false;},{passive:true});
+addEventListener('touchend',e=>{if(!started)return;const t=e.changedTouches[0];const dx=t.clientX-tx,dy=t.clientY-ty;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){swiped=true;hideHint();dx<0?next():prev();}},{passive:true});
+document.getElementById('viewport').addEventListener('click',e=>{if(!started||swiped){swiped=false;return;}hideHint();if(slides[cur].dataset.noclick)return;next();});
+function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement;}
+function enterFull(){if(STANDALONE)return;const el=document.documentElement;try{const f=el.requestFullscreen||el.webkitRequestFullscreen;if(f){const r=f.call(el);if(r&&r.catch)r.catch(()=>{});}}catch(err){}}
+function toggleFull(){try{if(!fsEl()){enterFull();}else{const f=document.exitFullscreen||document.webkitExitFullscreen;const r=f&&f.call(document);if(r&&r.catch)r.catch(()=>{});}}catch(err){}}
+let uiT;addEventListener('mousemove',e=>{document.body.classList.add('ui');clearTimeout(uiT);uiT=setTimeout(()=>document.body.classList.remove('ui'),2200);
+  const mx=(e.clientX/innerWidth-.5)*2,my=(e.clientY/innerHeight-.5)*2;stage.style.setProperty('--mx',mx.toFixed(3));stage.style.setProperty('--my',my.toFixed(3));});
+
+/* lazy atlas window: only nearby slides keep their (large) images in memory */
+const cache={};
+function load(u){if(!cache[u]){const i=new Image();i.src=u;cache[u]=i.decode?i.decode().catch(()=>{}):new Promise(r=>{i.onload=i.onerror=r;});}return cache[u];}
+function setWindow(c){slides.forEach((sl,j)=>{if(!sl.dataset.atlas)return;
+  const near=j>=c-1&&j<=c+(TOUCH?1:2);
+  if(near){load(sl.dataset.atlas);sl.style.setProperty('--atlas','url('+sl.dataset.atlas+')');}
+  else{sl.style.removeProperty('--atlas');delete cache[sl.dataset.atlas];}});}
+const bar=document.getElementById('loadbar'),btn=document.getElementById('go');
+const first=[...document.images].map(im=>im.complete?Promise.resolve():new Promise(r=>{im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});}))
+  .concat(slides.slice(0,3).filter(s=>s.dataset.atlas).map(s=>load(s.dataset.atlas)));
+let done=0;first.forEach(p=>p.then(()=>{done++;bar.style.width=Math.round(done/first.length*100)+'%';}));
+function ready(){btn.classList.add('ready');try{btn.focus();}catch(e){}}
+Promise.all(first).then(ready);setTimeout(ready,15000);
+setWindow(0);
+function begin(){if(started||!btn.classList.contains('ready'))return;started=true;
+  enterFull();
+  document.getElementById('start').classList.add('gone');document.body.classList.add('started');
+  setTimeout(()=>{document.getElementById('hint').classList.remove('gone');play(slides[0]);update();},350);
+  setTimeout(hideHint,7000);}
+btn.addEventListener('click',e=>{e.stopPropagation();begin();});
+slides[0].classList.add('active');
+})();
+</script>
+</body>
+</html>
